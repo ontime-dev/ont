@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -20,25 +21,41 @@ func ParseEvryFrom(every, from string) error {
 
 	last_char := every[len(every)-1:]
 
-	next_run, err := setNextRun(last_char, number)
+	next_run, err := setNextRun(last_char, from, number)
 	if err != nil {
 		return err
 	}
 	fmt.Printf("Next run:\n%s\n", next_run)
 
-	switch from {
-	case "now", "today":
-	//	fmt.Printf("Starting from %s \n", currentTime)
-	default:
-
-	}
-
 	return nil
 
 }
 
-func setNextRun(last_char string, number int) (string, error) {
+func setNextRun(last_char, from string, number int) (string, error) {
+
 	crntTime := time.Now()
+
+	switch from {
+	case "now", "today":
+		crntTime = time.Now()
+	case "tomorrow":
+		crntTime = crntTime.AddDate(0, 0, 1)
+	default:
+		var err error
+		if strings.Contains(from, "T") {
+			dateTime := strings.Split(from, "T")
+			from = dateTime[0] + " " + dateTime[1]
+		} else if strings.Contains(from, "-") {
+			from = from + " " + crntTime.Format("15:04:05")
+		} else if strings.Contains(from, ":") {
+			from = crntTime.Format("2006-01-02") + " " + from
+		}
+
+		crntTime, err = time.Parse("2006-01-02 15:04:05", from)
+		if err != nil {
+			return "", err
+		}
+	}
 
 	switch last_char {
 	case "h":
