@@ -21,6 +21,9 @@ func ParseEvryFrom(every, from string) error {
 	last_char := every[len(every)-1:]
 
 	next_run, err := setNextRun(last_char, number)
+	if err != nil {
+		return err
+	}
 	fmt.Printf("Next run:\n%s\n", next_run)
 
 	switch from {
@@ -36,21 +39,11 @@ func ParseEvryFrom(every, from string) error {
 
 func setNextRun(last_char string, number int) (string, error) {
 	crntTime := time.Now()
-	fmt.Println(crntTime)
-	/*
-		hour := crntTime.Hour()
-		min := crntTime.Minute()
-		sec := crntTime.Second()
-		day := crntTime.Day()
-		//weekDay := crntTime.Weekday()
-		month := crntTime.Month()
-		year := crntTime.Year()
-	*/
+
 	switch last_char {
 	case "h":
 		fmt.Println("every hour")
 		next_run := crntTime.Add(time.Hour * time.Duration(number)).Format("15:04:05 Feb 07 2006")
-		//next_run := strconv.Itoa(hour) + ":" + strconv.Itoa(min) + ":" + strconv.Itoa(sec) + " " + strconv.Itoa(day) + " " + month.String() + " " + strconv.Itoa(year)
 
 		return next_run, nil
 	case "m":
@@ -64,6 +57,10 @@ func setNextRun(last_char string, number int) (string, error) {
 	case "d":
 		fmt.Println("every day")
 		next_run := crntTime.AddDate(0, 0, number).Format("15:04:05 Jan 02 2006")
+		return next_run, nil
+	case "w":
+		fmt.Println("every week")
+		next_run := crntTime.AddDate(0, 0, number*7).Format("15:04:05 Jan 02 2006")
 		return next_run, nil
 	case "M":
 		next_run := crntTime.AddDate(0, number, 0).Format("15:04:05 Jan 02 2006")

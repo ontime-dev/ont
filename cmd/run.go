@@ -103,7 +103,5 @@ func runJob(cmd *cobra.Command, filepath []string) error {
 		return err
 	}
 
-	//fmt.Println(time.Now().Weekday())
-
 	return nil
 }
