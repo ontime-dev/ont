@@ -25,21 +25,22 @@ func ParseEvryFrom(every, from string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Next run:\n%s\n", next_run)
+	fmt.Printf("Second run:\n%s\n", next_run)
 
 	return nil
 
 }
 
-func setNextRun(last_char, from string, number int) (string, error) {
-
+func parseFrom(from string) (time.Time, error) {
 	crntTime := time.Now()
 
 	switch from {
 	case "now", "today":
 		crntTime = time.Now()
+		return crntTime, nil
 	case "tomorrow":
 		crntTime = crntTime.AddDate(0, 0, 1)
+		return crntTime, nil
 	default:
 		var err error
 		if strings.Contains(from, "T") {
@@ -48,28 +49,32 @@ func setNextRun(last_char, from string, number int) (string, error) {
 		} else if strings.Contains(from, "-") {
 			from = from + " " + crntTime.Format("15:04:05")
 		} else if strings.Contains(from, ":") {
-			from = crntTime.Format("2006-01-02") + " " + from
+			from = crntTime.Format("02-01-2006") + " " + from
 		}
 
-		crntTime, err = time.Parse("2006-01-02 15:04:05", from)
+		crntTime, err = time.Parse("02-01-2006 15:04:05", from)
 		if err != nil {
-			return "", err
+			return crntTime, err
 		}
+
+		return crntTime, nil
 	}
+}
+
+func parseEvery(crntTime time.Time, last_char string, number int) (string, error) {
 
 	switch last_char {
 	case "h":
 		fmt.Println("every hour")
-		next_run := crntTime.Add(time.Hour * time.Duration(number)).Format("15:04:05 Feb 07 2006")
-
+		next_run := crntTime.Add(time.Hour * time.Duration(number)).Format("15:04:05 Jan 02 2006")
 		return next_run, nil
 	case "m":
 		fmt.Println("every minute")
-		next_run := crntTime.Add(time.Minute * time.Duration(number)).Format("15:04:01 07 February 2024")
+		next_run := crntTime.Add(time.Minute * time.Duration(number)).Format("15:04:05 Jan 02 2006")
 		return next_run, nil
 	case "s":
 		fmt.Println("every seconds")
-		next_run := crntTime.Add(time.Second * time.Duration(number)).Format("15:04:01 07 February 2024")
+		next_run := crntTime.Add(time.Second * time.Duration(number)).Format("15:04:05 Jan 02 2006")
 		return next_run, nil
 	case "d":
 		fmt.Println("every day")
@@ -90,5 +95,23 @@ func setNextRun(last_char, from string, number int) (string, error) {
 	default:
 		return "", errors.New("Please specify a valid option with --every flag.")
 	}
+}
+
+func setNextRun(last_char, from string, number int) (string, error) {
+	crntTime, err := parseFrom(from)
+	if err != nil {
+		return "", err
+	}
+
+	fmt.Println("Next Run: ", crntTime.Format("15:04:05 Jan 02 2006"))
+	//function to insert the next_run in the database
+
+	next_run, err := parseEvery(crntTime, last_char, number)
+
+	if err != nil {
+		return "", err
+	}
+
+	return next_run, nil
 
 }
