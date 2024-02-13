@@ -5,9 +5,10 @@ package cmd
 
 import (
 	"errors"
+	"ont/internal/dbopts"
 	"ont/internal/run"
 	"os"
-	"os/exec"
+	"os/user"
 
 	"github.com/spf13/cobra"
 )
@@ -96,9 +97,20 @@ func runJob(cmd *cobra.Command, filepath []string) error {
 		return err
 	}
 
-	script := exec.Command(filepath[0])
+	/*script := exec.Command(filepath[0])
 
 	err = script.Run()
+	if err != nil {
+		return err
+	}*/
+
+	user, err := user.Current()
+	if err != nil {
+		return err
+	}
+
+	//err = dbopts.Create(user.Username)
+	err = dbopts.Opt("insert", user.Username, filepath[0])
 	if err != nil {
 		return err
 	}
