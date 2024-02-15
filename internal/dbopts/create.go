@@ -8,9 +8,10 @@ import (
 )
 
 const table = `(
-	id int
+	id int,
 	script varchar(255),
 	next_run varchar(255),
+	every varchar(255),
 	status varchar(255)
 )`
 

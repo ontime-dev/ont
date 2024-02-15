@@ -5,10 +5,12 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 	"ont/internal/dbopts"
 	"ont/internal/run"
 	"os"
 	"os/user"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 )
@@ -32,9 +34,11 @@ var runCmd = &cobra.Command{
 	Long: `This command runs the script in the specified time. 
 
 For example:
-  ont run --every 1hr /path/to/script.sh
+  ont run --every 1hr --from now /path/to/script.sh
+  ont run --every 1d --from tomorrow /path/to/script.sh 
   ont run --hour 01 /path/to/script.sh
-  ont run --every 1day --from dd/mm/yyyy /path/to/script.sh`,
+  ont run --every 1d --from dd-MM-yyyy /path/to/script.sh
+  ont run --every 1d --from dd-MM-yyyyThh:mm:ss /path/to/script.sh`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		err := runJob(cmd, args)
 		//fmt.Println(cmd.Flags().Lookup("every").Value.String())
@@ -80,23 +84,36 @@ func init() {
 	// runCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func runJob(cmd *cobra.Command, filepath []string) error {
-	if len(filepath) != 1 {
+func runJob(cmd *cobra.Command, script []string) error {
+	if len(script) != 1 {
 		return errors.New("Invalid number of arguments")
 
 	}
 
-	err := run.ParseEvryFrom(flags.every, flags.from)
+	next_run, err := run.ParseEvryFrom(flags.every, flags.from)
 	if err != nil {
 		return err
+	}
+
+	script_path := script[0]
+
+	if !filepath.IsAbs(script_path) {
+		script_path, _ = filepath.Abs(script_path)
+		fmt.Println("script: ", script_path)
 	}
 
 	//Check if script exists.
-	_, err = os.Stat(filepath[0])
+	_, err = os.Stat(script_path)
 	if err != nil {
 		return err
 	}
 
+	//wd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+
+	//fullpath := os.Get
 	/*script := exec.Command(filepath[0])
 
 	err = script.Run()
@@ -110,7 +127,8 @@ func runJob(cmd *cobra.Command, filepath []string) error {
 	}
 
 	//err = dbopts.Create(user.Username)
-	err = dbopts.Opt("insert", user.Username, filepath[0])
+
+	err = dbopts.Opt("insert", user.Username, script_path, next_run)
 	if err != nil {
 		return err
 	}

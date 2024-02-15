@@ -14,22 +14,22 @@ func ParseTimeDate() {
 
 }
 
-func ParseEvryFrom(every, from string) error {
+func ParseEvryFrom(every, from string) (string, error) {
 
 	number, err := strconv.Atoi(every[:len(every)-1])
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	last_char := every[len(every)-1:]
 
 	next_run, err := setNextRun(last_char, from, number)
 	if err != nil {
-		return err
+		return "", err
 	}
 	fmt.Printf("Second run:\n%s\n", next_run)
 
-	return nil
+	return next_run, err
 
 }
 
@@ -107,8 +107,8 @@ func setNextRun(last_char, from string, number int) (string, error) {
 
 	fmt.Println("Next Run: ", crntTime.Format("15:04:05 Jan 02 2006"))
 	//function to insert the next_run in the database
-
-	next_run, err := parseEvery(crntTime, last_char, number)
+	next_run := crntTime.Format("15:04:05 Jan 02 2006")
+	//next_run, err := parseEvery(crntTime, last_char, number)
 
 	if err != nil {
 		return "", err

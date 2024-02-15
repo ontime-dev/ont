@@ -25,8 +25,18 @@ func Opt(args ...string) error {
 			return err
 		}
 	case "insert":
-		//arg[1] = user, arg[2] = script path
-		//Insert(db, args[1], args[2])
+		//arg[1] = user, arg[2] = script path, arg[3] = next_run
+		fmt.Println("Hello there")
+		err := Insert(db, args[1], args[2], args[3])
+		if err != nil {
+			return err
+		}
+	case "list":
+		//arg[1] = user
+		err := FetchJobs(db, args[1])
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
