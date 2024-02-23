@@ -13,6 +13,14 @@ import (
 
 var cfgFile string
 
+type Jobs struct {
+	Id       int
+	Script   string
+	Next_run string
+	Every    string
+	Status   string
+}
+
 const customUsage = `Usage: 
 ont [command] <script>`
 

@@ -14,11 +14,13 @@ func Insert(db *sql.DB, user, script, next_run string) error {
 
 	id := setID(db, user)
 	status := "Done"
+	every := "Daily"
 
-	cmd := fmt.Sprintf("INSERT INTO %s (id, script, next_run, status) VALUES (%d, '%s', '%s', '%s')", user, id, script, next_run, status)
+	cmd := fmt.Sprintf("INSERT INTO %s (id, script, next_run, every, status) VALUES (%d, '%s', '%s', '%s', '%s')", user, id, script, next_run, every, status)
 	fmt.Println(cmd)
 	_, err = db.Exec(cmd)
 	if err != nil {
+		fmt.Printf("HEREEEEEE")
 		return err
 	}
 
@@ -27,7 +29,7 @@ func Insert(db *sql.DB, user, script, next_run string) error {
 }
 
 func setID(db *sql.DB, table string) int {
-	cmd := "SELECT MAX(id) AS max_id FROM " + table
+	cmd := fmt.Sprintf("SELECT MAX(id) AS max_id FROM %s", table)
 	var maxID int
 	err := db.QueryRow(cmd).Scan(&maxID)
 	if err != nil {

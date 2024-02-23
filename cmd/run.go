@@ -6,6 +6,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
+
 	"ont/internal/dbopts"
 	"ont/internal/run"
 	"os"
@@ -85,6 +86,7 @@ func init() {
 }
 
 func runJob(cmd *cobra.Command, script []string) error {
+
 	if len(script) != 1 {
 		return errors.New("Invalid number of arguments")
 
@@ -127,8 +129,17 @@ func runJob(cmd *cobra.Command, script []string) error {
 	}
 
 	//err = dbopts.Create(user.Username)
+	/*
+		job := new(Jobs)
+		job.Script = script_path
+		job.Next_run = next_run
+	*/
+	job := dbopts.Jobs{
+		Script:   script_path,
+		Next_run: next_run,
+	}
 
-	err = dbopts.Opt("insert", user.Username, script_path, next_run)
+	err = dbopts.Opt("insert", user.Username, job)
 	if err != nil {
 		return err
 	}
