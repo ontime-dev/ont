@@ -88,7 +88,7 @@ func init() {
 func runJob(cmd *cobra.Command, script []string) error {
 
 	if len(script) != 1 {
-		return errors.New("Invalid number of arguments")
+		return errors.New("invalid number of arguments")
 
 	}
 
@@ -137,6 +137,7 @@ func runJob(cmd *cobra.Command, script []string) error {
 	job := dbopts.Jobs{
 		Script:   script_path,
 		Next_run: next_run,
+		Every:    flags.every,
 	}
 
 	err = dbopts.Opt("insert", user.Username, job)

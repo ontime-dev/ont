@@ -22,6 +22,7 @@ func ParseEvryFrom(every, from string) (string, error) {
 	}
 
 	last_char := every[len(every)-1:]
+	fmt.Println(last_char)
 
 	next_run, err := setNextRun(last_char, from, number)
 	if err != nil {
@@ -63,7 +64,7 @@ func parseFrom(from string) (time.Time, error) {
 	}
 }
 
-func parseEvery(crntTime time.Time, last_char string, number int) (string, error) {
+/*func parseEvery(crntTime time.Time, last_char string, number int) (string, error) {
 
 	switch last_char {
 	case "h":
@@ -97,6 +98,16 @@ func parseEvery(crntTime time.Time, last_char string, number int) (string, error
 	default:
 		return "", errors.New("Please specify a valid option with --every flag.")
 	}
+}*/
+
+func lastCharValidity(last_char string) error {
+	valid_chars := []string{"h", "m", "s", "d", "W", "M", "y"}
+	for _, char := range valid_chars {
+		if char == last_char {
+			return nil
+		}
+	}
+	return errors.New("please Specify a valid option with --every flag")
 }
 
 func setNextRun(last_char, from string, number int) (string, error) {
@@ -108,8 +119,8 @@ func setNextRun(last_char, from string, number int) (string, error) {
 	fmt.Println("Next Run: ", crntTime.Format("15:04:05 Jan 02 2006"))
 	//function to insert the next_run in the database
 	next_run := crntTime.Format("15:04:05 Jan 02 2006")
-	//next_run, err := parseEvery(crntTime, last_char, number)
-
+	//_, err = parseEvery(crntTime, last_char, number)
+	err = lastCharValidity(last_char)
 	if err != nil {
 		return "", err
 	}

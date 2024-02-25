@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func Insert(db *sql.DB, user, script, next_run string) error {
+func Insert(db *sql.DB, user string, job Jobs) error {
 
 	err := Create(db, user)
 	if err != nil {
@@ -14,9 +14,8 @@ func Insert(db *sql.DB, user, script, next_run string) error {
 
 	id := setID(db, user)
 	status := "Done"
-	every := "Daily"
 
-	cmd := fmt.Sprintf("INSERT INTO %s (id, script, next_run, every, status) VALUES (%d, '%s', '%s', '%s', '%s')", user, id, script, next_run, every, status)
+	cmd := fmt.Sprintf("INSERT INTO %s (id, script, next_run, every, status) VALUES (%d, '%s', '%s', '%s', '%s')", user, id, job.Script, job.Next_run, job.Every, status)
 	fmt.Println(cmd)
 	_, err = db.Exec(cmd)
 	if err != nil {

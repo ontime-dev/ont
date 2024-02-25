@@ -35,7 +35,7 @@ func Opt(operation, user string, job Jobs) error {
 	case "insert":
 		//arg[1] = user, arg[2] = script path, arg[3] = next_run
 		fmt.Println("Hello there")
-		err := Insert(db, user, job.Script, job.Next_run)
+		err := Insert(db, user, job)
 		if err != nil {
 			return err
 		}

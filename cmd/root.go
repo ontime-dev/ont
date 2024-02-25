@@ -13,16 +13,8 @@ import (
 
 var cfgFile string
 
-type Jobs struct {
-	Id       int
-	Script   string
-	Next_run string
-	Every    string
-	Status   string
-}
-
-const customUsage = `Usage: 
-ont [command] <script>`
+//const customUsage = `Usage:
+//ont [command] <script>`
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{

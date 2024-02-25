@@ -28,6 +28,7 @@ func FetchJobs(db *sql.DB, user string) error {
 	for rows.Next() {
 
 		job := new(Jobs)
+		fmt.Println(cmd)
 		err = rows.Scan(&job.Id, &job.Script, &job.Next_run, &job.Every, &job.Status)
 		if err != nil {
 			return err
