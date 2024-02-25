@@ -28,9 +28,12 @@ func Insert(db *sql.DB, user string, job Jobs) error {
 }
 
 func setID(db *sql.DB, table string) int {
-	cmd := fmt.Sprintf("SELECT MAX(id) AS max_id FROM %s", table)
-	var maxID int
-	err := db.QueryRow(cmd).Scan(&maxID)
+	/*
+		cmd := fmt.Sprintf("SELECT MAX(id) AS max_id FROM %s", table)
+		var maxID int
+		err := db.QueryRow(cmd).Scan(&maxID)
+	*/
+	maxID, err := getMaxID(db, table)
 	if err != nil {
 		if maxID == 0 {
 			return 1
@@ -39,4 +42,16 @@ func setID(db *sql.DB, table string) int {
 	maxID += 1
 
 	return maxID
+}
+
+func getMaxID(db *sql.DB, table string) (int, error) {
+	cmd := fmt.Sprintf("SELECT MAX(id) AS max_id FROM %s", table)
+	var maxID int
+	err := db.QueryRow(cmd).Scan(&maxID)
+	if err != nil {
+		return 0, err
+	}
+
+	return maxID, nil
+
 }
