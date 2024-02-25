@@ -92,7 +92,7 @@ func runJob(cmd *cobra.Command, script []string) error {
 
 	}
 
-	next_run, err := run.ParseEvryFrom(flags.every, flags.from)
+	exec_time, err := run.ParseEvryFrom(flags.every, flags.from)
 	if err != nil {
 		return err
 	}
@@ -135,9 +135,9 @@ func runJob(cmd *cobra.Command, script []string) error {
 		job.Next_run = next_run
 	*/
 	job := dbopts.Jobs{
-		Script:   script_path,
-		Next_run: next_run,
-		Every:    flags.every,
+		Script:    script_path,
+		Exec_time: exec_time,
+		Every:     flags.every,
 	}
 
 	err = dbopts.Opt("insert", user.Username, job)

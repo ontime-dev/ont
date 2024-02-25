@@ -6,6 +6,20 @@ import (
 	"fmt"
 )
 
+func FetchJobs(db *sql.DB, table string) error {
+	maxID, err := getMaxID(db, table)
+	if err != nil {
+		return err
+	}
+
+	for id := 1; id <= maxID; id++ {
+		//cmd :=
+	}
+
+	return nil
+}
+
+/*
 func FetchJobs(db *sql.DB, user string) error {
 	//WITH RankedData AS (   SELECT     golang.*,     ROW_NUMBER() OVER (PARTITION BY id ORDER BY next_run ASC) AS rn   FROM     golang ) SELECT * FROM   RankedData WHERE   rn = 1;
 
@@ -13,9 +27,9 @@ func FetchJobs(db *sql.DB, user string) error {
 	/*err := isExist(db, user)
 	if err != nil {
 		return err
-	}*/
+	}
 
-	cmd := fmt.Sprintf(` WITH RankedData AS (   SELECT     %s.*,     ROW_NUMBER() OVER (PARTITION BY id ORDER BY next_run ASC) 
+	cmd := fmt.Sprintf(` WITH RankedData AS (   SELECT     %s.*,     ROW_NUMBER() OVER (PARTITION BY id ORDER BY next_run ASC)
 	AS rn   FROM     %s ) SELECT * FROM   RankedData WHERE   id = 1;`, user, user)
 
 	//fmt.Println(cmd)
@@ -39,7 +53,7 @@ func FetchJobs(db *sql.DB, user string) error {
 	}
 	return nil
 
-}
+}*/
 
 // THAT FUNC CAN BE DELETED //
 func isExist(db *sql.DB, user string) error {

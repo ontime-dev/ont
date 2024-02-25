@@ -9,11 +9,11 @@ import (
 )
 
 type Jobs struct {
-	Id       int
-	Script   string
-	Next_run string
-	Every    string
-	Status   string
+	Id        int
+	Script    string
+	Exec_time string
+	Every     string
+	Status    string
 }
 
 func Opt(operation, user string, job Jobs) error {
