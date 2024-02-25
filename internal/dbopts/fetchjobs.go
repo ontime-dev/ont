@@ -13,7 +13,15 @@ func FetchJobs(db *sql.DB, table string) error {
 	}
 
 	for id := 1; id <= maxID; id++ {
-		//cmd :=
+		var script, exec_time, every, status string
+
+		cmd := fmt.Sprintf("SELECT script,exec_time,every,status FROM %s WHERE id = %d ORDER BY timestamp DESC LIMIT 1", table, id)
+		fmt.Println(cmd)
+		err := db.QueryRow(cmd).Scan(&script, &exec_time, &every, &status)
+		if err != nil {
+			return err
+		}
+		fmt.Printf("ID: %d, Script: %s ----- Execution Time: %s ------- Every: %s ------- Status: %s\n", id, script, exec_time, every, status)
 	}
 
 	return nil
