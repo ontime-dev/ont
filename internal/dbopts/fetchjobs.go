@@ -6,22 +6,24 @@ import (
 	"fmt"
 )
 
-func FetchJobs(db *sql.DB, table string) error {
+func PrintJobs(db *sql.DB, table string) error {
 	maxID, err := getMaxID(db, table)
 	if err != nil {
 		return err
 	}
+	fmt.Printf("ID \t Script \t \t Execution Time \t Intervals \t Status \n")
+	fmt.Println("----------------------------------------------------------------------------------")
 
 	for id := 1; id <= maxID; id++ {
 		var script, exec_time, every, status string
 
 		cmd := fmt.Sprintf("SELECT script,exec_time,every,status FROM %s WHERE id = %d ORDER BY timestamp DESC LIMIT 1", table, id)
-		fmt.Println(cmd)
+
 		err := db.QueryRow(cmd).Scan(&script, &exec_time, &every, &status)
 		if err != nil {
 			return err
 		}
-		fmt.Printf("ID: %d, Script: %s ----- Execution Time: %s ------- Every: %s ------- Status: %s\n", id, script, exec_time, every, status)
+		fmt.Printf("%d \t| %s \t| %s \t| %s \t \t| %s\n", id, script, exec_time, every, status)
 	}
 
 	return nil

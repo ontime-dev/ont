@@ -18,7 +18,7 @@ func Insert(db *sql.DB, user string, job Jobs) error {
 	cmd := fmt.Sprintf("INSERT INTO %s (id, script, exec_time, every, status) VALUES (%d, '%s', '%s', '%s', '%s');", user, id, job.Script, job.Exec_time, job.Every, status)
 	//cmd := fmt.Sprintf("INSERT INTO %s (script, next_run, every, status) VALUES ( '%s', '%s', '%s', '%s')", user, job.Script, job.Next_run, job.Every, status)
 
-	fmt.Println(cmd)
+	//fmt.Println(cmd)
 	_, err = db.Exec(cmd)
 	if err != nil {
 		return err

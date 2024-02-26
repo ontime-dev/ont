@@ -26,6 +26,7 @@ var flags struct {
 	day   string
 	month string
 	year  string
+	yes   bool
 }
 
 // runCmd represents the run command
@@ -62,7 +63,9 @@ func init() {
 	runCmd.Flags().StringVarP(&flags.sec, "sec", "s", "00", "Specify the seconds.")
 	runCmd.Flags().StringVarP(&flags.day, "day", "d", "", "Specify the days.")
 	runCmd.Flags().StringVarP(&flags.month, "month", "M", "", "Specify the month.")
-	runCmd.Flags().StringVarP(&flags.year, "year", "y", "", "Specify the year.")
+	runCmd.Flags().StringVarP(&flags.year, "year", "Y", "", "Specify the year.")
+
+	runCmd.Flags().BoolVarP(&flags.yes, "yes", "y", false, "Continue with asking for confirmation")
 
 	runCmd.MarkFlagsRequiredTogether("every", "from")
 
@@ -140,10 +143,22 @@ func runJob(cmd *cobra.Command, script []string) error {
 		Every:     flags.every,
 	}
 
+	if !flags.yes {
+		confirm(job)
+	}
+
 	err = dbopts.Opt("insert", user.Username, job)
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func confirm(job dbopts.Jobs) {
+	fmt.Printf(
+		`Script: %s
+Next Execution time: %s 
+Interval: %s 
+Continue?(n/Y):`, job.Script, job.Exec_time, job.Every)
 }

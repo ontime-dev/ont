@@ -41,7 +41,7 @@ func Opt(operation, user string, job Jobs) error {
 		}
 	case "list":
 		//arg[1] = user
-		err := FetchJobs(db, user)
+		err := PrintJobs(db, user)
 		if err != nil {
 			return err
 		}
