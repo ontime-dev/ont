@@ -23,7 +23,7 @@ func Opt(operation, user string, job Jobs) error {
 		return err
 	}
 	defer db.Close()
-	fmt.Printf("Operation: %s -- User: %s\n", operation, user)
+	//fmt.Printf("Operation: %s -- User: %s\n", operation, user)
 
 	switch operation {
 	case "create":
@@ -34,7 +34,7 @@ func Opt(operation, user string, job Jobs) error {
 		}
 	case "insert":
 		//arg[1] = user, arg[2] = script path, arg[3] = next_run
-		fmt.Println("Hello there")
+		//fmt.Println("Hello there")
 		err := Insert(db, user, job)
 		if err != nil {
 			return err

@@ -4,6 +4,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 
@@ -144,7 +145,10 @@ func runJob(cmd *cobra.Command, script []string) error {
 	}
 
 	if !flags.yes {
-		confirm(job)
+		err := confirm(job)
+		if err != nil {
+			return err
+		}
 	}
 
 	err = dbopts.Opt("insert", user.Username, job)
@@ -155,10 +159,26 @@ func runJob(cmd *cobra.Command, script []string) error {
 	return nil
 }
 
-func confirm(job dbopts.Jobs) {
+func confirm(job dbopts.Jobs) error {
+
 	fmt.Printf(
 		`Script: %s
 Next Execution time: %s 
-Interval: %s 
-Continue?(n/Y):`, job.Script, job.Exec_time, job.Every)
+Interval: %s
+`, job.Script, job.Exec_time, job.Every)
+	for {
+		fmt.Printf("Continue?(n/Y):")
+		scanner := bufio.NewScanner(os.Stdin)
+		scanner.Scan()
+		input := scanner.Text()
+
+		switch input {
+		case "n", "N":
+			os.Exit(0)
+		case "y", "Y", "":
+			return nil
+		default:
+			fmt.Println("Invalid Choice!")
+		}
+	}
 }

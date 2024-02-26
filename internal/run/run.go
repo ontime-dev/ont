@@ -2,7 +2,6 @@ package run
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -22,13 +21,13 @@ func ParseEvryFrom(every, from string) (string, error) {
 	}
 
 	last_char := every[len(every)-1:]
-	fmt.Println(last_char)
+	//fmt.Println(last_char)
 
 	next_run, err := setNextRun(last_char, from, number)
 	if err != nil {
 		return "", err
 	}
-	fmt.Printf("Second run:\n%s\n", next_run)
+	//fmt.Printf("Second run:\n%s\n", next_run)
 
 	return next_run, err
 
@@ -116,7 +115,7 @@ func setNextRun(last_char, from string, number int) (string, error) {
 		return "", err
 	}
 
-	fmt.Println("Next Run: ", crntTime.Format("15:04:05 Jan 02 2006"))
+	//fmt.Println("Next Run: ", crntTime.Format("15:04:05 Jan 02 2006"))
 	//function to insert the next_run in the database
 	next_run := crntTime.Format("15:04:05 Jan 02 2006")
 	//_, err = parseEvery(crntTime, last_char, number)
