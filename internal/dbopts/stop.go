@@ -20,7 +20,7 @@ func StopJob(db *sql.DB, user string, job Jobs) error {
 		return err
 	}
 
-	fmt.Printf("Job %d stopped\n", job.Id)
+	fmt.Printf("Job %d is stopped\n", job.Id)
 	return nil
 }
 
