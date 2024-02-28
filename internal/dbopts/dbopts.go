@@ -45,6 +45,11 @@ func Opt(operation, user string, job Jobs) error {
 		if err != nil {
 			return err
 		}
+	case "stop":
+		err := StopJob(db, user, job)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

@@ -11,7 +11,7 @@ func PrintJobs(db *sql.DB, table string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("ID \t Script \t \t Execution Time \t Intervals \t Status \n")
+	fmt.Printf("ID \t Script \t \t Next Execution Time \t Intervals \t Status \n")
 	fmt.Println("----------------------------------------------------------------------------------")
 
 	for id := 1; id <= maxID; id++ {

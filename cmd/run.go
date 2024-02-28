@@ -119,14 +119,6 @@ func runJob(cmd *cobra.Command, script []string) error {
 		return err
 	}
 
-	//fullpath := os.Get
-	/*script := exec.Command(filepath[0])
-
-	err = script.Run()
-	if err != nil {
-		return err
-	}*/
-
 	user, err := user.Current()
 	if err != nil {
 		return err
@@ -142,6 +134,7 @@ func runJob(cmd *cobra.Command, script []string) error {
 		Script:    script_path,
 		Exec_time: exec_time,
 		Every:     flags.every,
+		Status:    "Active",
 	}
 
 	if !flags.yes {
