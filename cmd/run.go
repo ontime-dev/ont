@@ -104,7 +104,6 @@ func runJob(cmd *cobra.Command, script []string) error {
 
 	if !filepath.IsAbs(script_path) {
 		script_path, _ = filepath.Abs(script_path)
-		//fmt.Println("script: ", script_path)
 	}
 
 	//Check if script exists.
