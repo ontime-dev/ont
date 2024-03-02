@@ -5,7 +5,9 @@ package cmd
 
 import (
 	"errors"
+	"log"
 	"ont/internal/dbopts"
+	esc "ont/internal/escape"
 	"os/user"
 	"strconv"
 
@@ -21,16 +23,16 @@ var listCmd = &cobra.Command{
 		if len(args) == 1 {
 			jobID, err := strconv.Atoi(args[0])
 			if err != nil {
-				return err
+				esc.Error(err)
 			}
 			err = listJobs(jobID)
 			if err != nil {
-				return err
+				esc.Error(err)
 			}
 		} else if len(args) == 0 {
 			err := listJobs(0)
 			if err != nil {
-				return err
+				esc.Error(err)
 			}
 		} else {
 			return errors.New("you cannot specify more than one job")
@@ -56,7 +58,7 @@ func init() {
 func listJobs(jobid int) error {
 	user, err := user.Current()
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
 	job := dbopts.Jobs{
 		Id: jobid,
