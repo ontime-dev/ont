@@ -14,17 +14,12 @@ import (
 
 // stopCmd represents the stop command
 var stopCmd = &cobra.Command{
-	Use:   "stop",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Use:   "stop <jobID>",
+	Short: "Stops the execution of a job",
+	Long:  `Running 'ont stop' will mark the job <jobID> as inactive and the job will stop being executed`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 1 {
-			return errors.New("please specify the ID of the job")
+			return errors.New("please specify the job ID")
 		}
 
 		jobid, err := strconv.Atoi(args[0])
@@ -62,7 +57,7 @@ func stopJob(jobid int) error {
 
 	job := dbopts.Jobs{
 		Id:     jobid,
-		Status: "Stop",
+		Status: "Inactive",
 	}
 	err = dbopts.Opt("stop", user.Username, job)
 	if err != nil {

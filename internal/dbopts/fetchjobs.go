@@ -77,3 +77,18 @@ func isExist(db *sql.DB, user string) error {
 	return nil
 
 }
+
+func PrintOneJob(db *sql.DB, table string, jobid int) error {
+	var script, exec_time, every, status string
+	cmd := fmt.Sprintf("select script,exec_time,every,status from %s where id=%d ORDER BY timestamp DESC LIMIT 1;", table, jobid)
+	err := db.QueryRow(cmd).Scan(&script, &exec_time, &every, &status)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("ID \t Script \t \t Next Execution Time \t Intervals \t Status \n")
+	fmt.Println("----------------------------------------------------------------------------------")
+	fmt.Printf("%d \t| %s \t| %s \t| %s \t \t| %s\n", jobid, script, exec_time, every, status)
+
+	return nil
+
+}

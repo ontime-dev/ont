@@ -7,7 +7,6 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-
 	"ont/internal/dbopts"
 	"ont/internal/run"
 	"os"
@@ -148,7 +147,6 @@ func runJob(cmd *cobra.Command, script []string) error {
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
@@ -175,3 +173,9 @@ Interval: %s
 		}
 	}
 }
+
+/*
+func jobExec(script string) {
+	cmd := exec.Command("sh", "-c", script)
+	cmd.Run()
+}*/

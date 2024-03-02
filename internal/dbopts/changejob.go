@@ -4,11 +4,12 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"strings"
 )
 
-func StopJob(db *sql.DB, user string, job Jobs) error {
+func ChangeJobStatus(db *sql.DB, user, Jobstatus string, job Jobs) error {
 
-	job, err := GetJob(db, user, job)
+	job, err := GetJob(db, user, Jobstatus, job)
 
 	if err != nil {
 		return err
@@ -24,7 +25,7 @@ func StopJob(db *sql.DB, user string, job Jobs) error {
 	return nil
 }
 
-func GetJob(db *sql.DB, user string, job Jobs) (Jobs, error) {
+func GetJob(db *sql.DB, user, Jobstatus string, job Jobs) (Jobs, error) {
 
 	var status string
 	cmd := fmt.Sprintf("SELECT script,exec_time,every,status FROM %s WHERE id = %d ORDER BY timestamp DESC LIMIT 1", user, job.Id)
@@ -33,8 +34,9 @@ func GetJob(db *sql.DB, user string, job Jobs) (Jobs, error) {
 		return job, err
 	}
 
-	if status == "Stop" {
-		fmt.Println("Job is already stopped")
+	if status == Jobstatus {
+		Jobstatus = strings.ToLower(Jobstatus[:1]) + Jobstatus[1:]
+		fmt.Printf("Job is already %s. \n", Jobstatus)
 		os.Exit(0)
 	}
 

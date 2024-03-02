@@ -4,21 +4,36 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"errors"
 	"ont/internal/dbopts"
 	"os/user"
+	"strconv"
 
 	"github.com/spf13/cobra"
 )
 
 // listCmd represents the list command
 var listCmd = &cobra.Command{
-	Use:   "list",
+	Use:   "list [jobid]",
 	Short: "List all the scheduled jobs",
 	Long:  `Lists all the scheduled jobs for the current user.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		err := listJobs()
-		if err != nil {
-			return err
+		if len(args) == 1 {
+			jobID, err := strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
+			err = listJobs(jobID)
+			if err != nil {
+				return err
+			}
+		} else if len(args) == 0 {
+			err := listJobs(0)
+			if err != nil {
+				return err
+			}
+		} else {
+			return errors.New("you cannot specify more than one job")
 		}
 		return nil
 	},
@@ -38,18 +53,19 @@ func init() {
 	// listCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func listJobs() error {
+func listJobs(jobid int) error {
 	user, err := user.Current()
 	if err != nil {
 		return err
 	}
-	job := dbopts.Jobs{}
+	job := dbopts.Jobs{
+		Id: jobid,
+	}
 
 	err = dbopts.Opt("list", user.Username, job)
 
 	if err != nil {
 		return err
 	}
-
 	return nil
 }

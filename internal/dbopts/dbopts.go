@@ -2,6 +2,7 @@ package dbopts
 
 import (
 	"database/sql"
+	"errors"
 
 	"fmt"
 
@@ -41,12 +42,26 @@ func Opt(operation, user string, job Jobs) error {
 		}
 	case "list":
 		//arg[1] = user
-		err := PrintJobs(db, user)
+		if job.Id == 0 {
+			err := PrintJobs(db, user)
+			if err != nil {
+				return err
+			}
+		} else if job.Id > 0 {
+			err := PrintOneJob(db, user, job.Id)
+			if err != nil {
+				return err
+			}
+		} else {
+			return errors.New("please enter a valid jobID")
+		}
+	case "stop":
+		err := ChangeJobStatus(db, user, "Inactive", job)
 		if err != nil {
 			return err
 		}
-	case "stop":
-		err := StopJob(db, user, job)
+	case "start":
+		err := ChangeJobStatus(db, user, "Active", job)
 		if err != nil {
 			return err
 		}
