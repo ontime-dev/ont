@@ -4,11 +4,11 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
 	"log"
-	"time"
+	"os"
 
-	"github.com/sevlyar/go-daemon"
+	"ont/internal/service"
+
 	"github.com/spf13/cobra"
 )
 
@@ -37,31 +37,39 @@ func init() {
 }
 
 func work() {
+	/*
+		cntxt := &daemon.Context{
+			PidFileName: "/var/run/ont.pid",
+			PidFilePerm: 0644,
+			LogFileName: "/var/log/ont.log",
+			LogFilePerm: 0640,
+			WorkDir:     "/",
+			Umask:       027,
+		}
 
-	cntxt := &daemon.Context{
-		PidFileName: "/var/run/ont.pid",
-		PidFilePerm: 0644,
-		LogFileName: "/var/log/ont.log",
-		LogFilePerm: 0640,
-		WorkDir:     "/var/log/",
-		Umask:       027,
-	}
+		d, err := cntxt.Reborn()
+		if err != nil {
+			log.Fatal("Unable to run: ", err)
+		}
+		if d != nil {
+			return
+		}
+		defer cntxt.Release()
 
-	d, err := cntxt.Reborn()
+		log.Print("- - - - - - - - - - - - - - -")
+		log.Print("daemon started")
+	*/
+	logFile, err := os.OpenFile("/var/log/ont.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+
 	if err != nil {
-		log.Fatal("Unable to run: ", err)
+		log.Fatal("Error")
 	}
-	if d != nil {
-		return
-	}
-	defer cntxt.Release()
+	defer logFile.Close()
 
-	log.Print("- - - - - - - - - - - - - - -")
-	log.Print("daemon started")
+	logger := log.New(logFile, "PREFIX:", log.Ldate|log.Ltime|log.Lshortfile)
+	err = service.Letsgo(logger)
 
-	for {
-		fmt.Println(time.Now())
-		time.Sleep(2 * time.Second)
-
+	if err != nil {
+		logger.Fatal(err.Error())
 	}
 }

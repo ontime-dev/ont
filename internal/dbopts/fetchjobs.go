@@ -8,6 +8,7 @@ import (
 
 func PrintJobs(db *sql.DB, table string) error {
 	maxID, err := getMaxID(db, table)
+	var job Jobs
 	if err != nil {
 		return err
 	}
@@ -15,15 +16,11 @@ func PrintJobs(db *sql.DB, table string) error {
 	fmt.Println("----------------------------------------------------------------------------------")
 
 	for id := 1; id <= maxID; id++ {
-		var script, exec_time, every, status string
-
-		cmd := fmt.Sprintf("SELECT script,exec_time,every,status FROM %s WHERE id = %d ORDER BY timestamp DESC LIMIT 1", table, id)
-
-		err := db.QueryRow(cmd).Scan(&script, &exec_time, &every, &status)
+		job, err = GetJob(db, table, id, job)
 		if err != nil {
 			return err
 		}
-		fmt.Printf("%d \t| %s \t| %s \t| %s \t \t| %s\n", id, script, exec_time, every, status)
+		fmt.Printf("%d \t| %s \t| %s \t| %s \t \t| %s\n", id, job.Script, job.Exec_time, job.Every, job.Status)
 	}
 
 	return nil
@@ -65,9 +62,9 @@ func FetchJobs(db *sql.DB, user string) error {
 
 }*/
 
-// THAT FUNC CAN BE DELETED //
-func isExist(db *sql.DB, user string) error {
-	cmd := fmt.Sprintf("SELECT * FROM %s", user)
+// THIS FUNC CAN BE DELETED //
+func isExist(db *sql.DB, table string) error {
+	cmd := fmt.Sprintf("SELECT * FROM %s", table)
 
 	_, err := db.Exec(cmd)
 	if err != nil {
@@ -91,4 +88,15 @@ func PrintOneJob(db *sql.DB, table string, jobid int) error {
 
 	return nil
 
+}
+
+func GetJob(db *sql.DB, table string, id int, job Jobs) (Jobs, error) {
+	cmd := fmt.Sprintf("SELECT script,exec_time,every,status FROM %s WHERE id = %d ORDER BY timestamp DESC LIMIT 1", table, id)
+
+	err := db.QueryRow(cmd).Scan(&job.Script, &job.Exec_time, &job.Every, &job.Status)
+	if err != nil {
+		return job, err
+	}
+
+	return job, nil
 }
