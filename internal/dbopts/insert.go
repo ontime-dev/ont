@@ -34,7 +34,7 @@ func setID(db *sql.DB, table string) int {
 		var maxID int
 		err := db.QueryRow(cmd).Scan(&maxID)
 	*/
-	maxID, err := getMaxID(db, table)
+	maxID, err := GetMaxID(db, table)
 	if err != nil {
 		if maxID == 0 {
 			return 1
@@ -45,7 +45,7 @@ func setID(db *sql.DB, table string) int {
 	return maxID
 }
 
-func getMaxID(db *sql.DB, table string) (int, error) {
+func GetMaxID(db *sql.DB, table string) (int, error) {
 	cmd := fmt.Sprintf("SELECT MAX(id) AS max_id FROM %s", table)
 	var maxID int
 	err := db.QueryRow(cmd).Scan(&maxID)

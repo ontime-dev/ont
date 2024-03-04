@@ -7,7 +7,7 @@ import (
 )
 
 func PrintJobs(db *sql.DB, table string) error {
-	maxID, err := getMaxID(db, table)
+	maxID, err := GetMaxID(db, table)
 	var job Jobs
 	if err != nil {
 		return err
@@ -91,7 +91,8 @@ func PrintOneJob(db *sql.DB, table string, jobid int) error {
 }
 
 func GetJob(db *sql.DB, table string, id int, job Jobs) (Jobs, error) {
-	cmd := fmt.Sprintf("SELECT script,exec_time,every,status FROM %s WHERE id = %d ORDER BY timestamp DESC LIMIT 1", table, id)
+	job.Id = id
+	cmd := fmt.Sprintf("SELECT script,exec_time,every,status FROM %s WHERE id = %d ORDER BY timestamp DESC LIMIT 1", table, job.Id)
 
 	err := db.QueryRow(cmd).Scan(&job.Script, &job.Exec_time, &job.Every, &job.Status)
 	if err != nil {
