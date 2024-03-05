@@ -37,28 +37,6 @@ func init() {
 }
 
 func work() {
-	/*
-		cntxt := &daemon.Context{
-			PidFileName: "/var/run/ont.pid",
-			PidFilePerm: 0644,
-			LogFileName: "/var/log/ont.log",
-			LogFilePerm: 0640,
-			WorkDir:     "/",
-			Umask:       027,
-		}
-
-		d, err := cntxt.Reborn()
-		if err != nil {
-			log.Fatal("Unable to run: ", err)
-		}
-		if d != nil {
-			return
-		}
-		defer cntxt.Release()
-
-		log.Print("- - - - - - - - - - - - - - -")
-		log.Print("daemon started")
-	*/
 	logFile, err := os.OpenFile("/var/log/ont.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 
 	if err != nil {
