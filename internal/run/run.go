@@ -2,6 +2,7 @@ package run
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -12,14 +13,16 @@ func ParseTimeDate() {
 }
 
 func ParseEvryFrom(every, from string) (string, error) {
+	/*
+		number, err := strconv.Atoi(every[:len(every)-1])
+		if err != nil {
+			return "", err
+		}
 
-	number, err := strconv.Atoi(every[:len(every)-1])
-	if err != nil {
-		return "", err
-	}
-
-	last_char := every[len(every)-1:]
-	//fmt.Println(last_char)
+		last_char := every[len(every)-1:]
+		//fmt.Println(last_char)
+	*/
+	number, last_char := getLastChar(every)
 
 	next_run, err := setNextRun(last_char, from, number)
 	if err != nil {
@@ -61,7 +64,7 @@ func parseFrom(from string) (time.Time, error) {
 	}
 }
 
-/*func parseEvery(crntTime time.Time, last_char string, number int) (string, error) {
+func parseEvery(crntTime time.Time, last_char string, number int) (string, error) {
 
 	switch last_char {
 	case "h":
@@ -95,7 +98,7 @@ func parseFrom(from string) (time.Time, error) {
 	default:
 		return "", errors.New("Please specify a valid option with --every flag.")
 	}
-}*/
+}
 
 func lastCharValidity(last_char string) error {
 	valid_chars := []string{"h", "m", "s", "d", "W", "M", "y"}
@@ -124,4 +127,14 @@ func setNextRun(last_char, from string, number int) (string, error) {
 
 	return next_run, nil
 
+}
+
+func getLastChar(every string) (number int, last_char string) {
+	number, err := strconv.Atoi(every[:len(every)-1])
+	if err != nil {
+		return 0, ""
+	}
+	last_char = every[len(every)-1:]
+
+	return number, last_char
 }
