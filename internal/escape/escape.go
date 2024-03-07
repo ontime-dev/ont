@@ -17,35 +17,33 @@ func ErrorWithZeroRC(err string) {
 	os.Exit(0)
 }*/
 
-//type Logger
+func NewLogger() (*log.Logger, *os.File) {
 
-func NewLogger() *log.Logger {
 	logFile, err := os.OpenFile("/var/log/ont.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 
 	if err != nil {
-		log.Fatal("Error")
+		Error(err.Error())
 	}
-	defer logFile.Close()
 
 	logger := log.New(logFile, "PREFIX:", log.Ldate|log.Ltime|log.Lshortfile)
 
-	return logger
+	return logger, logFile
 
 }
 
 func LogPrint(value ...any) {
-	logger := NewLogger()
-
-	logger.Print(value...)
+	logger, logFile := NewLogger()
+	logger.Println(value...)
+	logFile.Close()
 }
 
 func LogPrintf(format string, value ...any) {
-	logger := NewLogger()
-	logger.Printf(format, value)
-
+	logger, logFile := NewLogger()
+	logger.Printf(format, value...)
+	logFile.Close()
 }
 
 func LogFatal(value ...any) {
-	LogPrint(value)
+	LogPrint(value...)
 	os.Exit(1)
 }
