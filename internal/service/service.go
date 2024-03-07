@@ -48,7 +48,7 @@ func ProcessTable(db *sql.DB, table string, wg *sync.WaitGroup) {
 	if err != nil {
 		escape.LogPrint(err)
 	}
-	escape.LogPrint(table)
+	//escape.LogPrint(table)
 	for id := 1; id <= maxID; id++ {
 		job, err := dbopts.GetJob(db, table, id, job)
 		if err != nil {
@@ -56,7 +56,7 @@ func ProcessTable(db *sql.DB, table string, wg *sync.WaitGroup) {
 		}
 		if job.Exec_time == time.Now().Format("15:04:05 Jan 02 2006") {
 			escape.LogPrint("Execute")
-			Execute(table, job.Script)
+			go Execute(table, job.Script)
 		}
 
 	}
