@@ -42,7 +42,7 @@ For example:
   ont run --every 1d --from dd-MM-yyyy /path/to/script.sh
   ont run --every 1d --from dd-MM-yyyyThh:mm:ss /path/to/script.sh`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		err := runJob(cmd, args)
+		err := runJob(args)
 		//fmt.Println(cmd.Flags().Lookup("every").Value.String())
 		return err
 	},
@@ -88,7 +88,7 @@ func init() {
 	// runCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func runJob(cmd *cobra.Command, script []string) error {
+func runJob(script []string) error {
 
 	if len(script) != 1 {
 		return errors.New("invalid number of arguments")
