@@ -2,7 +2,6 @@ package dbopts
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	"ont/internal/escape"
 	"strings"
@@ -51,7 +50,7 @@ func GetJobStatus(db *sql.DB, table, Jobstatus string, job Jobs) (Jobs, error) {
 	if oldjob.Status == Jobstatus {
 		Jobstatus = strings.ToLower(Jobstatus[:1]) + Jobstatus[1:]
 		err := fmt.Sprintf("Job %d is already %s.", job.Id, Jobstatus)
-		escape.ErrorWithZeroRC(errors.New(err))
+		escape.Error(err)
 	}
 
 	oldjob.Status = job.Status

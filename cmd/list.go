@@ -23,16 +23,16 @@ var listCmd = &cobra.Command{
 		if len(args) == 1 {
 			jobID, err := strconv.Atoi(args[0])
 			if err != nil {
-				esc.Error(err)
+				esc.Error(err.Error())
 			}
 			err = listJobs(jobID)
 			if err != nil {
-				esc.Error(err)
+				esc.Error(err.Error())
 			}
 		} else if len(args) == 0 {
 			err := listJobs(0)
 			if err != nil {
-				esc.Error(err)
+				esc.Error(err.Error())
 			}
 		} else {
 			return errors.New("you cannot specify more than one job")

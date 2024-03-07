@@ -4,9 +4,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"log"
-	"os"
-
+	"ont/internal/escape"
 	"ont/internal/service"
 
 	"github.com/spf13/cobra"
@@ -37,7 +35,8 @@ func init() {
 }
 
 func work() {
-	logFile, err := os.OpenFile("/var/log/ont.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+
+	/*logFile, err := os.OpenFile("/var/log/ont.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 
 	if err != nil {
 		log.Fatal("Error")
@@ -45,9 +44,10 @@ func work() {
 	defer logFile.Close()
 
 	logger := log.New(logFile, "PREFIX:", log.Ldate|log.Ltime|log.Lshortfile)
-	err = service.Letsgo(logger)
-
+	*/
+	err := service.Letsgo()
 	if err != nil {
-		logger.Fatal(err.Error())
+		//logger.Fatal(err.Error())
+		escape.LogFatal(err.Error())
 	}
 }
