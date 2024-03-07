@@ -2,13 +2,24 @@ package service
 
 import (
 	"ont/internal/escape"
+	"os/exec"
 	"os/user"
+	"strconv"
+	"syscall"
 )
 
 func Execute(table, script string) error {
-	escape.LogPrint("I AM EXECUTE")
-	escape.LogPrintf("Table: %s and script: %s", table, script)
 
+	uid, homeDir := getUserInfo(table)
+	escape.LogPrint(script)
+	cmd := exec.Command(script)
+	cmd.SysProcAttr = &syscall.SysProcAttr{}
+	cmd.SysProcAttr.Credential = &syscall.Credential{Uid: uid}
+	cmd.Dir = homeDir
+	err := cmd.Run()
+	if err != nil {
+		escape.LogPrint(err.Error())
+	}
 	return nil
 
 }
@@ -17,12 +28,14 @@ func ChangeNextRun() {
 
 }
 
-func getUID(table string) string {
+func getUserInfo(table string) (uint32, string) {
 	user, err := user.Lookup(table)
 	if err != nil {
 		escape.LogFatal(err)
 	}
-	userUID := user.Uid
-
-	return userUID
+	userUID, err := strconv.ParseUint(user.Uid, 10, 32)
+	if err != nil {
+		escape.LogFatal(err)
+	}
+	return uint32(userUID), user.HomeDir
 }

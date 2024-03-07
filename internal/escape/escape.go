@@ -25,7 +25,7 @@ func NewLogger() (*log.Logger, *os.File) {
 		Error(err.Error())
 	}
 
-	logger := log.New(logFile, "PREFIX:", log.Ldate|log.Ltime|log.Lshortfile)
+	logger := log.New(logFile, "", log.Ldate|log.Ltime)
 
 	return logger, logFile
 
