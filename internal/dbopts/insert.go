@@ -3,16 +3,24 @@ package dbopts
 import (
 	"database/sql"
 	"fmt"
+	"ont/internal/escape"
 )
 
-func Insert(db *sql.DB, user string, job Jobs) error {
+func Insert(db *sql.DB, user string, job Jobs, new bool) error {
 
+	var id int
 	err := Create(db, user)
 	if err != nil {
 		return err
 	}
 
-	id := setID(db, user)
+	if new {
+		id = setID(db, user)
+	} else {
+		id = job.Id
+		escape.LogPrint("Inserting in table")
+	}
+	fmt.Println(id)
 	//status := "Done"
 
 	cmd := fmt.Sprintf("INSERT INTO %s (id, script, exec_time, every, status) VALUES (%d, '%s', '%s', '%s', '%s');", user, id, job.Script, job.Exec_time, job.Every, job.Status)

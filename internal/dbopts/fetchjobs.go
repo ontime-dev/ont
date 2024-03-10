@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"ont/internal/escape"
 )
 
 func PrintJobs(db *sql.DB, table string) error {
@@ -85,6 +86,7 @@ func PrintOneJob(db *sql.DB, table string, jobid int) error {
 	fmt.Printf("ID \t Script \t \t Next Execution Time \t Intervals \t Status \n")
 	fmt.Println("----------------------------------------------------------------------------------")
 	fmt.Printf("%d \t| %s \t| %s \t| %s \t \t| %s\n", jobid, script, exec_time, every, status)
+	escape.LogPrint("TEST TEST")
 
 	return nil
 

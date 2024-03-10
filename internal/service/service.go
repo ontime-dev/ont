@@ -34,13 +34,17 @@ func Letsgo() error {
 		var wg sync.WaitGroup
 		for _, table := range allTables {
 			wg.Add(1)
+			//escape.LogPrint(table)
 			go ProcessTable(db, table, &wg)
 		}
 		wg.Wait()
+		//escape.LogPrint("I AM DONE")
+		//time.Sleep(time.Second * 1)
 	}
 }
 
 func ProcessTable(db *sql.DB, table string, wg *sync.WaitGroup) {
+	//escape.LogPrint("Processing Table ", table)
 	defer wg.Done()
 	var job dbopts.Jobs
 
@@ -55,8 +59,18 @@ func ProcessTable(db *sql.DB, table string, wg *sync.WaitGroup) {
 			escape.LogPrint(err)
 		}
 		if job.Exec_time == time.Now().Format("15:04:05 Jan 02 2006") {
-			escape.LogPrint("Execute")
-			go Execute(table, job.Script)
+			//		escape.LogPrint("Execute")
+			//CHECK IF STATUS IS ACTIVE
+			if job.Status == "Active" {
+				Execute(db, table, job)
+				//escape.LogPrint(id)
+				// err := ChangeExecTime(db, table, job)
+				// if err != nil {
+				// 	escape.LogFatal(err.Error())
+				// }
+			} else {
+				escape.LogPrint("Job IS NOT ACTIVE")
+			}
 		}
 
 	}

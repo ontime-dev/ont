@@ -22,7 +22,7 @@ func ParseEvryFrom(every, from string) (string, error) {
 		last_char := every[len(every)-1:]
 		//fmt.Println(last_char)
 	*/
-	number, last_char := getLastChar(every)
+	number, last_char := GetLastChar(every)
 
 	next_run, err := setNextRun(last_char, from, number)
 	if err != nil {
@@ -64,7 +64,7 @@ func parseFrom(from string) (time.Time, error) {
 	}
 }
 
-func parseEvery(crntTime time.Time, last_char string, number int) (string, error) {
+func ParseEvery(crntTime time.Time, last_char string, number int) (string, error) {
 
 	switch last_char {
 	case "h":
@@ -124,12 +124,13 @@ func setNextRun(last_char, from string, number int) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	//next_run, err = parseEvery(crntTime, last_char, number)
 
 	return next_run, nil
 
 }
 
-func getLastChar(every string) (number int, last_char string) {
+func GetLastChar(every string) (number int, last_char string) {
 	number, err := strconv.Atoi(every[:len(every)-1])
 	if err != nil {
 		return 0, ""
