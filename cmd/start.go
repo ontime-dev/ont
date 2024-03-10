@@ -6,7 +6,6 @@ package cmd
 import (
 	"errors"
 	"ont/internal/dbopts"
-	"ont/internal/escape"
 	"ont/internal/run"
 	"os/user"
 	"strconv"
@@ -76,6 +75,6 @@ func startJob(jobid int) error {
 	if err != nil {
 		return err
 	}
-	escape.LogPrintf("Job %d started.", jobid)
+
 	return nil
 }
