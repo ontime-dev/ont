@@ -65,6 +65,11 @@ func Opt(operation, user string, job Jobs) error {
 		if err != nil {
 			return err
 		}
+	case "remove":
+		if err := RemoveJob(db, user, job); err != nil {
+			return err
+		}
+
 	}
 
 	return nil
