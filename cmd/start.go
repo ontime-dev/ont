@@ -6,11 +6,15 @@ package cmd
 import (
 	"errors"
 	"ont/internal/dbopts"
+	"ont/internal/escape"
+	"ont/internal/run"
 	"os/user"
 	"strconv"
 
 	"github.com/spf13/cobra"
 )
+
+var from string
 
 // startCmd represents the start command
 var startCmd = &cobra.Command{
@@ -38,6 +42,8 @@ var startCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(startCmd)
 
+	startCmd.Flags().StringVarP(&from, "from", "f", "now", "Start the job from a specific time and date.")
+
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
@@ -55,14 +61,21 @@ func startJob(jobid int) error {
 		return err
 	}
 
+	crnttime, err := run.ParseFrom(from)
+
+	if err != nil {
+		return err
+	}
+	exec_time := crnttime.Format("15:04:05 Jan 02 2006")
 	job := dbopts.Jobs{
-		Id:     jobid,
-		Status: "Active",
+		Id:        jobid,
+		Status:    "Active",
+		Exec_time: exec_time,
 	}
 	err = dbopts.Opt("start", user.Username, job)
 	if err != nil {
 		return err
 	}
-
+	escape.LogPrintf("Job %d started.", jobid)
 	return nil
 }

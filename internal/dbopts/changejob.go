@@ -54,6 +54,7 @@ func GetJobStatus(db *sql.DB, table, Jobstatus string, job Jobs) (Jobs, error) {
 	}
 
 	oldjob.Status = job.Status
+	oldjob.Exec_time = job.Exec_time
 
 	return oldjob, nil
 }

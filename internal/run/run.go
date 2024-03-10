@@ -34,7 +34,7 @@ func ParseEvryFrom(every, from string) (string, error) {
 
 }
 
-func parseFrom(from string) (time.Time, error) {
+func ParseFrom(from string) (time.Time, error) {
 	crntTime := time.Now()
 
 	switch from {
@@ -111,7 +111,7 @@ func lastCharValidity(last_char string) error {
 }
 
 func setNextRun(last_char, from string, number int) (string, error) {
-	crntTime, err := parseFrom(from)
+	crntTime, err := ParseFrom(from)
 	if err != nil {
 		return "", err
 	}
