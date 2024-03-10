@@ -136,9 +136,11 @@ func runJob(script []string) error {
 	}
 
 	if !flags.yes {
-		err := confirm(job)
-		if err != nil {
-			return err
+		if flags.from != "now" {
+			err := confirm(job)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
