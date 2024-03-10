@@ -17,13 +17,24 @@ func ErrorWithZeroRC(err string) {
 	os.Exit(0)
 }*/
 
-func NewLogger() (*log.Logger, *os.File) {
-
+func Init() *os.File {
 	logFile, err := os.OpenFile("/var/log/ont.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-
 	if err != nil {
 		Error(err.Error())
 	}
+
+	return logFile
+}
+
+func NewLogger() (*log.Logger, *os.File) {
+
+	// logFile, err := os.OpenFile("/var/log/ont.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+
+	// if err != nil {
+	// 	Error(err.Error())
+	// }
+
+	logFile := Init()
 
 	logger := log.New(logFile, "", log.Ldate|log.Ltime)
 
