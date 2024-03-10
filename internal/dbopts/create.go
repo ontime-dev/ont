@@ -8,7 +8,7 @@ import (
 )
 
 const table = `(
-	timestamp timestamp,
+	timestamp timestamp(3),
 	id int,
 	script varchar(255),
 	exec_time varchar(255),
