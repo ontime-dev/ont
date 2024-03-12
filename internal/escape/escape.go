@@ -6,8 +6,8 @@ import (
 	"os"
 )
 
-func Error(err string) {
-	fmt.Println(err)
+func Error(err string, values ...any) {
+	fmt.Printf(err, values...)
 	os.Exit(1)
 }
 
