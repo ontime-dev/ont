@@ -37,6 +37,7 @@ func init() {
 func work() {
 	//escape.LogPrint("Ontime daemon started")
 	escape.Init()
+	escape.LogPrint(cfgFile)
 	/*logFile, err := os.OpenFile("/var/log/ont.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 
 	if err != nil {
