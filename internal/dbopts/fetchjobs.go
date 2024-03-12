@@ -19,7 +19,9 @@ func PrintJobs(db *sql.DB, table string) error {
 	for id := 1; id <= maxID; id++ {
 		job, err = GetJob(db, table, id, job)
 		if err != nil {
-			return err
+			if err.Error() != "sql: no rows in result set" {
+				return err
+			}
 		}
 		fmt.Printf("%d \t| %s \t| %s \t| %s \t \t| %s\n", id, job.Script, job.Exec_time, job.Every, job.Status)
 	}
@@ -81,7 +83,9 @@ func PrintOneJob(db *sql.DB, table string, jobid int) error {
 	cmd := fmt.Sprintf("select script,exec_time,every,status from %s where id=%d ORDER BY timestamp DESC LIMIT 1;", table, jobid)
 	err := db.QueryRow(cmd).Scan(&script, &exec_time, &every, &status)
 	if err != nil {
-		return err
+		if err.Error() == "sql: no rows in result set" {
+			escape.Error("Job %d doesn't exist!\n", jobid)
+		}
 	}
 	fmt.Printf("ID \t Script \t \t Next Execution Time \t Intervals \t Status \n")
 	fmt.Println("----------------------------------------------------------------------------------")
