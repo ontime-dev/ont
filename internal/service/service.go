@@ -56,7 +56,10 @@ func ProcessTable(db *sql.DB, table string, wg *sync.WaitGroup) {
 	for id := 1; id <= maxID; id++ {
 		job, err := dbopts.GetJob(db, table, id, job)
 		if err != nil {
-			escape.LogPrint(err)
+			if err.Error() != "sql: no rows in result set" {
+				escape.LogPrint(err)
+			}
+
 		}
 		if job.Exec_time == time.Now().Format("15:04:05 Jan 02 2006") {
 			//		escape.LogPrint("Execute")
