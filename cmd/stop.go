@@ -56,8 +56,9 @@ func stopJob(jobid int) error {
 	}
 
 	job := dbopts.Jobs{
-		Id:     jobid,
-		Status: "Inactive",
+		Id:        jobid,
+		Status:    "Inactive",
+		Exec_time: "Not Available",
 	}
 	err = dbopts.Opt("stop", user.Username, job)
 	if err != nil {
