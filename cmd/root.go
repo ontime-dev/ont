@@ -5,7 +5,6 @@ package cmd
 
 import (
 	"fmt"
-	"ont/internal/escape"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -13,6 +12,10 @@ import (
 )
 
 var cfgFile string
+
+// type OntPassword interface {
+// 	GetOntPassword() string
+// }
 
 //const customUsage = `Usage:
 //ont [command] <script>`
@@ -55,25 +58,17 @@ func init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
-	// if cfgFile != "" {
-	// 	// Use config file from the flag.
-	// 	viper.SetConfigFile(cfgFile)
-	// } else {
-	// 	// Find home directory.
-	// 	home, err := os.UserHomeDir()
-	// 	cobra.CheckErr(err)
 
-	// 	// Search config in home directory with name ".ont" (without extension).
-	// 	viper.AddConfigPath(home)
-	// 	viper.SetConfigType("yaml")
-	// 	viper.SetConfigName(".ont")
-	// }
 	viper.SetConfigFile(cfgFile)
-	//viper.AutomaticEnv() // read in environment variables that match
+	viper.SetConfigType("env")
 
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
-		escape.LogPrint("Using Configuration File: ", cfgFile)
+	err := viper.ReadInConfig()
+	if err != nil {
+		fmt.Println(err.Error())
 	}
+
 }
+
+// func GetOntPassword() string {
+// 	return viper.GetString("DBPASS")
+// }

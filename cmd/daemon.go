@@ -8,6 +8,7 @@ import (
 	"ont/internal/service"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // daemonCmd represents the daemon command
@@ -37,7 +38,8 @@ func init() {
 func work() {
 	//escape.LogPrint("Ontime daemon started")
 	escape.Init()
-	escape.LogPrint(cfgFile)
+	escape.LogPrint(viper.ConfigFileUsed())
+	escape.LogPrint(viper.GetString("server.hostname"))
 	/*logFile, err := os.OpenFile("/var/log/ont.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 
 	if err != nil {

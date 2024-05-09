@@ -1,0 +1,10 @@
+[Unit]
+Description=Ontime daemon service
+After=network.target
+
+[Service]
+Environment=HOME=/root
+ExecStart=/usr/local/bin/ont daemon 
+
+[Install]
+WantedBy=multi-user.target
