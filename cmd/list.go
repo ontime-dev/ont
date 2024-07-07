@@ -5,7 +5,9 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 	"log"
+	"ont/internal/client"
 	"ont/internal/dbopts"
 	esc "ont/internal/escape"
 	"os/user"
@@ -56,16 +58,33 @@ func init() {
 }
 
 func listJobs(jobid int) error {
+
 	user, err := user.Current()
 	if err != nil {
 		log.Fatal(err)
 	}
-	job := dbopts.Jobs{
+	job := []dbopts.Jobs{
 		Id: jobid,
 	}
+	fmt.Printf("ID \t Script \t \t Next Execution Time \t Intervals \t Status \n")
+	fmt.Println("----------------------------------------------------------------------------------")
 
-	err = dbopts.Opt("list", user.Username, job)
+	//jobs, err := dbopts.Opt("list", user.Username, job, cfgFile)
+	//	fmt.Println(jobs)
+	message := client.Message{
+		Command: "list",
+		User:    user.Username,
+		Job:     job,
+	}
+	err = client.SendMsg(message)
+	if err != nil {
+		return err
+	}
 
+	//err = client.RecieveRspns()
+	/*for _, job := range jobs {
+		fmt.Printf("%d \t| %s \t| %s \t| %s \t \t| %s\n", job.Id, job.Script, job.Exec_time, job.Every, job.Status)
+	}*/
 	if err != nil {
 		return err
 	}

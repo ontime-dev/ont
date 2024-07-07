@@ -5,9 +5,7 @@ package cmd
 
 import (
 	"errors"
-	"ont/internal/dbopts"
 	esc "ont/internal/escape"
-	"os/user"
 	"strconv"
 
 	"github.com/spf13/cobra"
@@ -58,7 +56,7 @@ func init() {
 }
 
 func removeJob(jobid int) error {
-	user, err := user.Current()
+	/*user, err := user.Current()
 	if err != nil {
 		return err
 	}
@@ -66,10 +64,11 @@ func removeJob(jobid int) error {
 		Id: jobid,
 	}
 
-	err = dbopts.Opt("remove", user.Username, job)
+	//err = dbopts.Opt("remove", user.Username, job, cfgFile)
+	dbopts.Opt("remove", user.Username, job, cfgFile)
 
 	if err != nil {
 		return err
-	}
+	}*/
 	return nil
 }

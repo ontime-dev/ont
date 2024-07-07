@@ -5,13 +5,9 @@ package cmd
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"ont/internal/dbopts"
-	"ont/internal/run"
 	"os"
-	"os/user"
-	"path/filepath"
 
 	"github.com/spf13/cobra"
 )
@@ -89,65 +85,67 @@ func init() {
 }
 
 func runJob(script []string) error {
-
-	if len(script) != 1 {
-		return errors.New("invalid number of arguments")
-
-	}
-
-	exec_time, err := run.ParseEvryFrom(flags.every, flags.from)
-	if err != nil {
-		return err
-	}
-
-	script_path := script[0]
-
-	if !filepath.IsAbs(script_path) {
-		script_path, _ = filepath.Abs(script_path)
-	}
-
-	//Check if script exists.
-	_, err = os.Stat(script_path)
-	if err != nil {
-		return err
-	}
-
-	//wd, err := os.Getwd()
-	if err != nil {
-		return err
-	}
-
-	user, err := user.Current()
-	if err != nil {
-		return err
-	}
-
-	//err = dbopts.Create(user.Username)
 	/*
-		job := new(Jobs)
-		job.Script = script_path
-		job.Next_run = next_run
-	*/
-	job := dbopts.Jobs{
-		Script:    script_path,
-		Exec_time: exec_time,
-		Every:     flags.every,
-		Status:    "Active",
-	}
+		if len(script) != 1 {
+			return errors.New("invalid number of arguments")
 
-	if !flags.yes {
-		if flags.from != "now" {
-			err := confirm(job)
-			if err != nil {
-				return err
+		}
+
+		exec_time, err := run.ParseEvryFrom(flags.every, flags.from)
+		if err != nil {
+			return err
+		}
+
+		script_path := script[0]
+
+		if !filepath.IsAbs(script_path) {
+			script_path, _ = filepath.Abs(script_path)
+		}
+
+		//Check if script exists.
+		_, err = os.Stat(script_path)
+		if err != nil {
+			return err
+		}
+
+		//wd, err := os.Getwd()
+		if err != nil {
+			return err
+		}
+
+		user, err := user.Current()
+		if err != nil {
+			return err
+		}
+
+		//err = dbopts.Create(user.Username)
+		/*
+			job := new(Jobs)
+			job.Script = script_path
+			job.Next_run = next_run
+
+		job := dbopts.Jobs{
+			Script:    script_path,
+			Exec_time: exec_time,
+			Every:     flags.every,
+			Status:    "Active",
+		}
+
+		if !flags.yes {
+			if flags.from != "now" {
+				err := confirm(job)
+				if err != nil {
+					return err
+				}
 			}
 		}
-	}
 
-	err = dbopts.Opt("insert", user.Username, job)
-	if err != nil {
-		return err
-	}
+		//err = dbopts.Opt("insert", user.Username, job, cfgFile)
+		dbopts.Opt("insert", user.Username, job, cfgFile)
+
+		if err != nil {
+			return err
+		}*/
 	return nil
 }
 

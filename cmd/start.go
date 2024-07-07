@@ -5,9 +5,6 @@ package cmd
 
 import (
 	"errors"
-	"ont/internal/dbopts"
-	"ont/internal/run"
-	"os/user"
 	"strconv"
 
 	"github.com/spf13/cobra"
@@ -55,7 +52,7 @@ func init() {
 }
 
 func startJob(jobid int) error {
-	user, err := user.Current()
+	/*user, err := user.Current()
 	if err != nil {
 		return err
 	}
@@ -71,10 +68,10 @@ func startJob(jobid int) error {
 		Status:    "Active",
 		Exec_time: exec_time,
 	}
-	err = dbopts.Opt("start", user.Username, job)
+	dbopts.Opt("start", user.Username, job, cfgFile)
 	if err != nil {
 		return err
 	}
-
+	*/
 	return nil
 }

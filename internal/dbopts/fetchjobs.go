@@ -7,26 +7,29 @@ import (
 	"ont/internal/escape"
 )
 
-func PrintJobs(db *sql.DB, table string) error {
+func PrintJobs(db *sql.DB, table string) (error, []Jobs) {
+	var jobs []Jobs
 	maxID, err := GetMaxID(db, table)
 	var job Jobs
 	if err != nil {
-		return err
+		return err, jobs
 	}
-	fmt.Printf("ID \t Script \t \t Next Execution Time \t Intervals \t Status \n")
-	fmt.Println("----------------------------------------------------------------------------------")
+	/*fmt.Printf("ID \t Script \t \t Next Execution Time \t Intervals \t Status \n")
+	fmt.Println("----------------------------------------------------------------------------------")*/
 
 	for id := 1; id <= maxID; id++ {
 		job, err = GetJob(db, table, id, job)
 		if err != nil {
 			if err.Error() != "sql: no rows in result set" {
-				return err
+				return err, jobs
 			}
 		}
-		fmt.Printf("%d \t| %s \t| %s \t| %s \t \t| %s\n", id, job.Script, job.Exec_time, job.Every, job.Status)
+		jobs = append(jobs, job)
+		//fmt.Printf("%d \t| %s \t| %s \t| %s \t \t| %s\n", id, job.Script, job.Exec_time, job.Every, job.Status)
+
 	}
 
-	return nil
+	return nil, jobs
 }
 
 /*
@@ -78,7 +81,8 @@ func isExist(db *sql.DB, table string) error {
 
 }
 
-func PrintOneJob(db *sql.DB, table string, jobid int) error {
+func PrintOneJob(db *sql.DB, table string, jobid int) (error, []Jobs) {
+	var jobs []Jobs
 	var script, exec_time, every, status string
 	cmd := fmt.Sprintf("select script,exec_time,every,status from %s where id=%d ORDER BY timestamp DESC LIMIT 1;", table, jobid)
 	err := db.QueryRow(cmd).Scan(&script, &exec_time, &every, &status)
@@ -87,12 +91,15 @@ func PrintOneJob(db *sql.DB, table string, jobid int) error {
 			escape.Error("Job %d doesn't exist!\n", jobid)
 		}
 	}
-	fmt.Printf("ID \t Script \t \t Next Execution Time \t Intervals \t Status \n")
-	fmt.Println("----------------------------------------------------------------------------------")
-	fmt.Printf("%d \t| %s \t| %s \t| %s \t \t| %s\n", jobid, script, exec_time, every, status)
-	escape.LogPrint("TEST TEST")
-
-	return nil
+	job := Jobs{
+		Id:        jobid,
+		Script:    script,
+		Exec_time: exec_time,
+		Every:     every,
+		Status:    status,
+	}
+	jobs = append(jobs, job)
+	return nil, jobs
 
 }
 

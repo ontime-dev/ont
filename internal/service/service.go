@@ -16,6 +16,7 @@ func Letsgo() error {
 	}
 
 	defer db.Close()
+	go Server()
 
 	for {
 		var tablename string

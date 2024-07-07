@@ -4,18 +4,16 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var cfgFile string
 
-// type OntPassword interface {
-// 	GetOntPassword() string
-// }
+type OntCfg interface {
+	GetCfg() string
+}
 
 //const customUsage = `Usage:
 //ont [command] <script>`
@@ -41,7 +39,7 @@ func Execute() {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
+	//cobra.OnInitialize(initConfig)
 	rootCmd.CompletionOptions.HiddenDefaultCmd = true
 	//rootCmd.SetUsageFunc(Usage)
 	//rootCmd.SetUsageTemplate(customUsage)
@@ -57,18 +55,18 @@ func init() {
 }
 
 // initConfig reads in config file and ENV variables if set.
-func initConfig() {
+// func initConfig() {
 
-	viper.SetConfigFile(cfgFile)
-	viper.SetConfigType("env")
+// 	viper.SetConfigFile(cfgFile)
+// 	viper.SetConfigType("env")
 
-	err := viper.ReadInConfig()
-	if err != nil {
-		fmt.Println(err.Error())
-	}
+// 	err := viper.ReadInConfig()
+// 	if err != nil {
+// 		fmt.Println(err.Error())
+// 	}
 
-}
-
-// func GetOntPassword() string {
-// 	return viper.GetString("DBPASS")
 // }
+
+func GetCfg() string {
+	return cfgFile
+}
