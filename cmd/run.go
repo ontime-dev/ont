@@ -5,9 +5,14 @@ package cmd
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
+	"ont/internal/client"
 	"ont/internal/dbopts"
+	"ont/internal/run"
 	"os"
+	"os/user"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 )
@@ -85,67 +90,83 @@ func init() {
 }
 
 func runJob(script []string) error {
-	/*
-		if len(script) != 1 {
-			return errors.New("invalid number of arguments")
 
-		}
+	if len(script) != 1 {
+		return errors.New("invalid number of arguments")
 
-		exec_time, err := run.ParseEvryFrom(flags.every, flags.from)
-		if err != nil {
-			return err
-		}
+	}
 
-		script_path := script[0]
+	exec_time, err := run.ParseEvryFrom(flags.every, flags.from)
+	if err != nil {
+		return err
+	}
 
-		if !filepath.IsAbs(script_path) {
-			script_path, _ = filepath.Abs(script_path)
-		}
+	script_path := script[0]
 
-		//Check if script exists.
-		_, err = os.Stat(script_path)
-		if err != nil {
-			return err
-		}
+	if !filepath.IsAbs(script_path) {
+		script_path, _ = filepath.Abs(script_path)
+	}
 
-		//wd, err := os.Getwd()
-		if err != nil {
-			return err
-		}
+	//Check if script exists.
+	_, err = os.Stat(script_path)
+	if err != nil {
+		return err
+	}
 
-		user, err := user.Current()
-		if err != nil {
-			return err
-		}
+	//wd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
 
-		//err = dbopts.Create(user.Username)
-		/*
-			job := new(Jobs)
-			job.Script = script_path
-			job.Next_run = next_run
+	user, err := user.Current()
+	if err != nil {
+		return err
+	}
 
-		job := dbopts.Jobs{
-			Script:    script_path,
-			Exec_time: exec_time,
-			Every:     flags.every,
-			Status:    "Active",
-		}
+	//err = dbopts.Create(user.Username)
 
-		if !flags.yes {
-			if flags.from != "now" {
-				err := confirm(job)
-				if err != nil {
-					return err
-				}
+	//job := new(Jobs)
+	//job.Script = script_path
+	//job.Next_run = next_run
+
+	job := dbopts.Jobs{
+		Script:    script_path,
+		Exec_time: exec_time,
+		Every:     flags.every,
+		Status:    "Active",
+	}
+
+	if !flags.yes {
+		if flags.from != "now" {
+			err := confirm(job)
+			if err != nil {
+				return err
 			}
 		}
+	}
+	// message := make(map[string]interface{})
+	// message["Command"] = "run"
+	// message["User"] = user.Username
+	// message["Job"] = job
+	message := client.Message{
+		Command: "run",
+		User:    user.Username,
+		Job:     []dbopts.Jobs{job},
+	}
 
-		//err = dbopts.Opt("insert", user.Username, job, cfgFile)
-		dbopts.Opt("insert", user.Username, job, cfgFile)
+	err, response := client.SendMsg(message)
+	if err != nil {
+		return err
+	}
 
-		if err != nil {
-			return err
-		}*/
+	fmt.Println(response.Status)
+
+	//err = dbopts.Opt("insert", user.Username, job, cfgFile)
+	//dbopts.Opt("insert", user.Username, job, cfgFile)
+
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

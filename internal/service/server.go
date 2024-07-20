@@ -11,10 +11,17 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+// type Message struct {
+// 	Command string        `json:"command"`
+// 	User    string        `json:"user"`
+// 	Job     []dbopts.Jobs `json:"job"`
+// }
+
 type Message struct {
 	Command string        `json:"command"`
 	User    string        `json:"user"`
 	Job     []dbopts.Jobs `json:"job"`
+	Status  string        `json:"status"`
 }
 
 func Server(db *sql.DB) {
@@ -63,7 +70,15 @@ func Server(db *sql.DB) {
 				Job:     jobs,
 			}
 			sendResponse(response, clientAddr, conn)
-
+		case "run":
+			err := dbopts.Insert(db, msg.User, msg.Job[0], true)
+			if err != nil {
+				escape.Error(err.Error())
+			}
+			response := Message{
+				Status: "Ok",
+			}
+			sendResponse(response, clientAddr, conn)
 		}
 		//	:= dbopts.Opt(msg.Command, msg.User, msg.Job, cfgFile)
 

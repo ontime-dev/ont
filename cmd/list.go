@@ -82,6 +82,7 @@ func listJobs(jobid int) error {
 	for _, job := range response.Job {
 		fmt.Printf("%d \t| %s \t| %s \t| %s \t \t| %s\n", job.Id, job.Script, job.Exec_time, job.Every, job.Status)
 	}
+
 	//	fmt.Println("RESPONSE: ", len(response.Job))
 
 	//err = client.RecieveRspns()

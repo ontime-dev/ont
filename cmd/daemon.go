@@ -36,22 +36,12 @@ func init() {
 }
 
 func work() {
-	//escape.LogPrint("Ontime daemon started")
 	escape.Init()
 	escape.LogPrint(viper.ConfigFileUsed())
 	escape.LogPrint(viper.GetString("server.hostname"))
-	/*logFile, err := os.OpenFile("/var/log/ont.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 
-	if err != nil {
-		log.Fatal("Error")
-	}
-	defer logFile.Close()
-
-	logger := log.New(logFile, "PREFIX:", log.Ldate|log.Ltime|log.Lshortfile)
-	*/
 	err := service.Letsgo()
 	if err != nil {
-		//logger.Fatal(err.Error())
 		escape.LogFatal(err.Error())
 	}
 }

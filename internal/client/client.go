@@ -11,6 +11,7 @@ type Message struct {
 	Command string        `json:"command"`
 	User    string        `json:"user"`
 	Job     []dbopts.Jobs `json:"job"`
+	Status  string        `json:"status"`
 }
 
 func SendMsg(message any) (error, Message) {
