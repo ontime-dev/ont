@@ -102,6 +102,16 @@ func Server(db *sql.DB) {
 				Status: status,
 			}
 			sendResponse(response, clientAddr, conn)
+
+		case "remove":
+			if err := dbopts.RemoveJob(db, msg.User, msg.Job); err != nil {
+				escape.Error(err.Error())
+			}
+			status := fmt.Sprintf("Job %d is removed.", msg.Job.Id)
+			response := Message{
+				Status: status,
+			}
+			sendResponse(response, clientAddr, conn)
 		}
 
 		//	:= dbopts.Opt(msg.Command, msg.User, msg.Job, cfgFile)
