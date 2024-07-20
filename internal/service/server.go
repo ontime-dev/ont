@@ -20,7 +20,8 @@ import (
 type Message struct {
 	Command string        `json:"command"`
 	User    string        `json:"user"`
-	Job     []dbopts.Jobs `json:"job"`
+	Job     dbopts.Jobs   `json:"job"`
+	Jobs    []dbopts.Jobs `json:"jobs"`
 	Status  string        `json:"status"`
 }
 
@@ -56,10 +57,8 @@ func Server(db *sql.DB) {
 		escape.LogPrintf("User '%s' requested '%s' job \n", msg.User, msg.Command)
 		switch msg.Command {
 		case "list":
-			/*type Response struct {
-				Jobs []dbopts.Jobs `json:"jobs"`
-			}*/
 			err, jobs := dbopts.List(db, msg.User)
+			fmt.Println(jobs)
 			if err != nil {
 				escape.Error(err.Error())
 			}
@@ -67,11 +66,13 @@ func Server(db *sql.DB) {
 			response := Message{
 				Command: msg.Command,
 				User:    msg.User,
-				Job:     jobs,
+				Jobs:    jobs,
 			}
+
 			sendResponse(response, clientAddr, conn)
+
 		case "run":
-			err := dbopts.Insert(db, msg.User, msg.Job[0], true)
+			err := dbopts.Insert(db, msg.User, msg.Job, true)
 			if err != nil {
 				escape.Error(err.Error())
 			}
@@ -79,7 +80,30 @@ func Server(db *sql.DB) {
 				Status: "Ok",
 			}
 			sendResponse(response, clientAddr, conn)
+
+		case "stop":
+			err := dbopts.ChangeJobStatus(db, msg.User, "Inactive", msg.Job)
+			if err != nil {
+				escape.Error(err.Error())
+			}
+			status := fmt.Sprintf("Job %d is inactive now.", msg.Job.Id)
+			response := Message{
+				Status: status,
+			}
+			sendResponse(response, clientAddr, conn)
+
+		case "start":
+			err := dbopts.ChangeJobStatus(db, msg.User, "Active", msg.Job)
+			if err != nil {
+				escape.Error(err.Error())
+			}
+			status := fmt.Sprintf("Job %d is active now.", msg.Job.Id)
+			response := Message{
+				Status: status,
+			}
+			sendResponse(response, clientAddr, conn)
 		}
+
 		//	:= dbopts.Opt(msg.Command, msg.User, msg.Job, cfgFile)
 
 	}

@@ -5,6 +5,11 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
+	"ont/internal/client"
+	"ont/internal/dbopts"
+	"ont/internal/run"
+	"os/user"
 	"strconv"
 
 	"github.com/spf13/cobra"
@@ -52,6 +57,35 @@ func init() {
 }
 
 func startJob(jobid int) error {
+	user, err := user.Current()
+	if err != nil {
+		return err
+	}
+	crnttime, err := run.ParseFrom(from)
+
+	if err != nil {
+		return err
+	}
+	exec_time := crnttime.Format("15:04:05 Jan 02 2006")
+
+	job := dbopts.Jobs{
+		Id:        jobid,
+		Status:    "Active",
+		Exec_time: exec_time,
+	}
+	message := client.Message{
+		Command: "start",
+		User:    user.Username,
+		Job:     job,
+	}
+
+	err, response := client.SendMsg(message)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(response.Status)
+
 	/*user, err := user.Current()
 	if err != nil {
 		return err

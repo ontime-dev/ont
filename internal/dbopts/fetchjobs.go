@@ -18,6 +18,7 @@ func PrintJobs(db *sql.DB, table string) (error, []Jobs) {
 	fmt.Println("----------------------------------------------------------------------------------")*/
 
 	for id := 1; id <= maxID; id++ {
+
 		job, err = GetJob(db, table, id, job)
 		if err != nil {
 			if err.Error() != "sql: no rows in result set" {
@@ -25,7 +26,6 @@ func PrintJobs(db *sql.DB, table string) (error, []Jobs) {
 			}
 		}
 		jobs = append(jobs, job)
-		//fmt.Printf("%d \t| %s \t| %s \t| %s \t \t| %s\n", id, job.Script, job.Exec_time, job.Every, job.Status)
 
 	}
 

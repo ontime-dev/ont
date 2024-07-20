@@ -10,7 +10,8 @@ import (
 type Message struct {
 	Command string        `json:"command"`
 	User    string        `json:"user"`
-	Job     []dbopts.Jobs `json:"job"`
+	Job     dbopts.Jobs   `json:"job"`
+	Jobs    []dbopts.Jobs `json:"jobs"`
 	Status  string        `json:"status"`
 }
 
@@ -41,7 +42,7 @@ func SendMsg(message any) (error, Message) {
 		return err, Message{}
 	}
 
-	buffer := make([]byte, 1024)
+	buffer := make([]byte, 2048)
 	n, _, err := conn.ReadFromUDP(buffer)
 	if err != nil {
 		fmt.Println("Error receiving response:", err)
@@ -50,7 +51,8 @@ func SendMsg(message any) (error, Message) {
 
 	var response Message
 	err = json.Unmarshal(buffer[:n], &response)
-
+	// fmt.Println(n)
+	// fmt.Println(buffer)
 	if err != nil {
 		fmt.Println("Error unmarshaling JSON:", err)
 	}
