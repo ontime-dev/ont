@@ -151,7 +151,7 @@ func runJob(script []string) error {
 	message := client.Message{
 		Command: "run",
 		User:    user.Username,
-		Job:     []dbopts.Jobs{job},
+		Job:     job,
 	}
 
 	err, response := client.SendMsg(message)
