@@ -79,7 +79,7 @@ func listJobs(jobid int) error {
 		return err
 	}
 
-	for _, job := range response.Job {
+	for _, job := range response.Jobs {
 		fmt.Printf("%d \t| %s \t| %s \t| %s \t \t| %s\n", job.Id, job.Script, job.Exec_time, job.Every, job.Status)
 	}
 
