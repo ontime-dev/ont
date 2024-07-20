@@ -5,6 +5,10 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
+	"ont/internal/client"
+	"ont/internal/dbopts"
+	"os/user"
 	"strconv"
 
 	"github.com/spf13/cobra"
@@ -48,7 +52,7 @@ func init() {
 }
 
 func stopJob(jobid int) error {
-	/*user, err := user.Current()
+	user, err := user.Current()
 	if err != nil {
 		return err
 	}
@@ -58,10 +62,23 @@ func stopJob(jobid int) error {
 		Status:    "Inactive",
 		Exec_time: "Not Available",
 	}
-	dbopts.Opt("stop", user.Username, job, cfgFile)
+	message := client.Message{
+		Command: "stop",
+		User:    user.Username,
+		Job:     job,
+	}
+
+	err, response := client.SendMsg(message)
 	if err != nil {
 		return err
 	}
-	*/
+
+	fmt.Println(response.Status)
+
+	// dbopts.Opt("stop", user.Username, job, cfgFile)
+	// if err != nil {
+	// 	return err
+	// }
+
 	return nil
 }
