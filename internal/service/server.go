@@ -17,13 +17,7 @@ type Message struct {
 	Job     []dbopts.Jobs `json:"job"`
 }
 
-func Server() {
-	//cfgFile := "/etc/ont/ont.conf"
-	db, err := sql.Open("mysql", "ont:password@/ontime")
-	if err != nil {
-		escape.Error(err.Error())
-	}
-	defer db.Close()
+func Server(db *sql.DB) {
 
 	addr := net.UDPAddr{
 		Port: 3033,
@@ -52,15 +46,13 @@ func Server() {
 			escape.Error(err.Error())
 		}
 
-		//DO WHAT SHOULD BE DONE WITH THE JSON
-		escape.LogPrintf("Received message from %s: %s, %s \n", clientAddr, msg.Command, msg.User)
-
+		escape.LogPrintf("User '%s' requested '%s' job \n", msg.User, msg.Command)
 		switch msg.Command {
 		case "list":
 			/*type Response struct {
 				Jobs []dbopts.Jobs `json:"jobs"`
 			}*/
-			err, jobs := dbopts.List(db, msg.Job, msg.User)
+			err, jobs := dbopts.List(db, msg.User)
 			if err != nil {
 				escape.Error(err.Error())
 			}

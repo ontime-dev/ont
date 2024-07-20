@@ -13,31 +13,31 @@ type Message struct {
 	Job     []dbopts.Jobs `json:"job"`
 }
 
-func SendMsg(message any) error {
+func SendMsg(message any) (error, Message) {
 	serverAddr, err := net.ResolveUDPAddr("udp", "127.0.0.1:3033")
 	if err != nil {
 		fmt.Println("Error resolving address:", err)
-		return err
+		return err, Message{}
 	}
 
 	// Dial the server address
 	conn, err := net.DialUDP("udp", nil, serverAddr)
 	if err != nil {
 		fmt.Println("Error dialing:", err)
-		return err
+		return err, Message{}
 	}
 	defer conn.Close()
 
 	messageData, err := json.Marshal(message)
 	if err != nil {
 		fmt.Println("Error marshaling JSON:", err)
-		return err
+		return err, Message{}
 	}
 
 	_, err = conn.Write(messageData)
 	if err != nil {
 		fmt.Println(err.Error())
-		return err
+		return err, Message{}
 	}
 
 	buffer := make([]byte, 1024)
@@ -45,18 +45,18 @@ func SendMsg(message any) error {
 	if err != nil {
 		fmt.Println("Error receiving response:", err)
 	}
-	fmt.Printf("Raw buffer content: %s\n", string(buffer[:n]))
+	//fmt.Printf("Raw buffer content: %s\n", string(buffer[:n]))
 
 	var response Message
 	err = json.Unmarshal(buffer[:n], &response)
-	fmt.Println(buffer[:n])
+
 	if err != nil {
 		fmt.Println("Error unmarshaling JSON:", err)
 	}
 
-	fmt.Println("Server response:", response.Job)
+	//fmt.Println("Server response:", response.Job)
 
-	return nil
+	return nil, response
 }
 
 /*

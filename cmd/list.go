@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"log"
 	"ont/internal/client"
-	"ont/internal/dbopts"
 	esc "ont/internal/escape"
 	"os/user"
 	"strconv"
@@ -63,9 +62,9 @@ func listJobs(jobid int) error {
 	if err != nil {
 		log.Fatal(err)
 	}
-	job := []dbopts.Jobs{
+	/*job := []dbopts.Jobs{
 		Id: jobid,
-	}
+	}*/
 	fmt.Printf("ID \t Script \t \t Next Execution Time \t Intervals \t Status \n")
 	fmt.Println("----------------------------------------------------------------------------------")
 
@@ -74,12 +73,16 @@ func listJobs(jobid int) error {
 	message := client.Message{
 		Command: "list",
 		User:    user.Username,
-		Job:     job,
 	}
-	err = client.SendMsg(message)
+	err, response := client.SendMsg(message)
 	if err != nil {
 		return err
 	}
+
+	for _, job := range response.Job {
+		fmt.Printf("%d \t| %s \t| %s \t| %s \t \t| %s\n", job.Id, job.Script, job.Exec_time, job.Every, job.Status)
+	}
+	//	fmt.Println("RESPONSE: ", len(response.Job))
 
 	//err = client.RecieveRspns()
 	/*for _, job := range jobs {

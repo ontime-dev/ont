@@ -9,12 +9,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var cfgFile string
-
-type OntCfg interface {
-	GetCfg() string
-}
-
 //const customUsage = `Usage:
 //ont [command] <script>`
 
@@ -48,25 +42,21 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "/etc/ont/ont.conf", "config file")
+	//rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "/etc/ont/ont.conf", "config file")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 }
 
 // initConfig reads in config file and ENV variables if set.
-// func initConfig() {
+/*func initConfig() {
 
-// 	viper.SetConfigFile(cfgFile)
-// 	viper.SetConfigType("env")
+	viper.SetConfigFile(cfgFile)
+	viper.SetConfigType("env")
 
-// 	err := viper.ReadInConfig()
-// 	if err != nil {
-// 		fmt.Println(err.Error())
-// 	}
+	err := viper.ReadInConfig()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 
-// }
-
-func GetCfg() string {
-	return cfgFile
-}
+}*/

@@ -2,7 +2,6 @@ package dbopts
 
 import (
 	"database/sql"
-	"errors"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -78,20 +77,26 @@ type Jobs struct {
 	return nil, nil
 }*/
 
-func List(db *sql.DB, job []Jobs, user string) (error, []Jobs) {
-	if job.Id == 0 {
-		err, jobs := PrintJobs(db, user)
-		if err != nil {
-			return err, nil
-		}
-		return nil, jobs
-	} else if job.Id > 0 {
-		err, jobs := PrintOneJob(db, user, job.Id)
-		if err != nil {
-			return err, nil
-		}
-		return nil, jobs
-	} else {
-		return errors.New("please enter a valid jobID"), nil
+func List(db *sql.DB, user string) (error, []Jobs) {
+	err, jobs := PrintJobs(db, user)
+	if err != nil {
+		return err, nil
 	}
+	return nil, jobs
+	/*
+		if job.Id == 0 {
+			err, jobs := PrintJobs(db, user)
+			if err != nil {
+				return err, nil
+			}
+			return nil, jobs
+		} /*else if job.Id > 0 {
+			err, jobs := PrintOneJob(db, user, job.Id)
+			if err != nil {
+				return err, nil
+			}
+			return nil, jobs
+		} else {
+			return errors.New("please enter a valid jobID"), nil
+		}*/
 }

@@ -2,6 +2,8 @@ package service
 
 import (
 	"database/sql"
+	"fmt"
+	"ont/internal/config"
 	"ont/internal/dbopts"
 	"ont/internal/escape"
 	"sync"
@@ -9,14 +11,18 @@ import (
 )
 
 func Letsgo() error {
+	cfgFile := "/etc/ont/ont.conf"
 
-	db, err := sql.Open("mysql", "ont:password@/ontime")
+	password := config.LoadConfig(cfgFile)
+	pass_cmd := fmt.Sprintf("ont:%s@/ontime", password)
+
+	db, err := sql.Open("mysql", pass_cmd)
 	if err != nil {
 		escape.LogFatal(err)
 	}
 
+	go Server(db)
 	defer db.Close()
-	go Server()
 
 	for {
 		var tablename string
