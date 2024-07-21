@@ -1,6 +1,7 @@
 package service
 
 import (
+	"bufio"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -27,29 +28,38 @@ type Message struct {
 
 func Server(db *sql.DB) {
 
-	addr := net.UDPAddr{
+	/*addr := net.UDPAddr{
 		Port: 3033,
 		IP:   net.ParseIP("127.0.0.1"),
-	}
+	}*/
 
-	conn, err := net.ListenUDP("udp", &addr)
+	//conn, err := net.ListenUDP("udp", &addr)
+	listener, err := net.Listen("tcp", ":3033")
 	if err != nil {
 		escape.Error(err.Error())
 	}
 
-	defer conn.Close()
+	defer listener.Close()
 	escape.LogPrint("Ontd server running on port 3033")
 
-	buffer := make([]byte, 1024)
+	//buffer := make([]byte, 1024)
 
 	for {
-		n, clientAddr, err := conn.ReadFromUDP(buffer)
+		//n, clientAddr, err := conn.ReadFromUDP(buffer)
+		conn, _ := listener.Accept()
+		reader := bufio.NewReader(conn)
+		message, err := reader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Error reading from connection:", err)
+		}
 		if err != nil {
 			escape.Error(err.Error())
 		}
 
 		var msg Message
-		err = json.Unmarshal(buffer[:n], &msg)
+		//defer conn.Close()
+		//err = json.Unmarshal(buffer[:n], &msg)
+		err = json.Unmarshal([]byte(message), &msg)
 		if err != nil {
 			escape.Error(err.Error())
 		}
@@ -71,7 +81,7 @@ func Server(db *sql.DB) {
 				Jobs:    jobs,
 			}
 
-			sendResponse(response, clientAddr, conn)
+			sendResponse(response, conn)
 
 		case "run":
 			err := dbopts.Insert(db, msg.User, msg.Job, true)
@@ -81,7 +91,7 @@ func Server(db *sql.DB) {
 			response := Message{
 				Status: "Ok",
 			}
-			sendResponse(response, clientAddr, conn)
+			sendResponse(response, conn)
 
 		case "stop":
 			err := dbopts.ChangeJobStatus(db, msg.User, "Inactive", msg.Job)
@@ -97,7 +107,7 @@ func Server(db *sql.DB) {
 					Status: status,
 				}
 			}
-			sendResponse(response, clientAddr, conn)
+			sendResponse(response, conn)
 
 		case "start":
 			err := dbopts.ChangeJobStatus(db, msg.User, "Active", msg.Job)
@@ -113,7 +123,7 @@ func Server(db *sql.DB) {
 					Status: status,
 				}
 			}
-			sendResponse(response, clientAddr, conn)
+			sendResponse(response, conn)
 
 		case "remove":
 
@@ -129,22 +139,25 @@ func Server(db *sql.DB) {
 					Status: status,
 				}
 			}
-			sendResponse(response, clientAddr, conn)
+			sendResponse(response, conn)
 		}
 
 		//	:= dbopts.Opt(msg.Command, msg.User, msg.Job, cfgFile)
-
+		conn.Close()
 	}
 
 }
 
-func sendResponse(response any, clientAddr *net.UDPAddr, conn *net.UDPConn) {
+// func sendResponse(response any, clientAddr *net.UDPAddr, conn *net.UDPConn) {
+func sendResponse(response any, conn net.Conn) {
+
 	responseData, err := json.Marshal(response)
 	if err != nil {
 		fmt.Println("Error marshaling JSON:", err)
 	}
 
-	_, err = conn.WriteToUDP(responseData, clientAddr)
+	//_, err = conn.WriteToUDP(responseData, clientAddr)
+	_, err = conn.Write(append(responseData, '\n'))
 	if err != nil {
 		fmt.Println("Error writing to UDP:", err)
 	}
