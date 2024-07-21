@@ -144,10 +144,7 @@ func runJob(script []string) error {
 			}
 		}
 	}
-	// message := make(map[string]interface{})
-	// message["Command"] = "run"
-	// message["User"] = user.Username
-	// message["Job"] = job
+
 	message := client.Message{
 		Command: "run",
 		User:    user.Username,
@@ -160,9 +157,6 @@ func runJob(script []string) error {
 	}
 
 	fmt.Println(response.Status)
-
-	//err = dbopts.Opt("insert", user.Username, job, cfgFile)
-	//dbopts.Opt("insert", user.Username, job, cfgFile)
 
 	if err != nil {
 		return err

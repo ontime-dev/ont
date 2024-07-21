@@ -13,9 +13,10 @@ import (
 )
 
 func Execute(db *sql.DB, table string, job dbopts.Jobs) {
-	escape.LogPrint("Executing script", job.Script)
+	//Enable below when verbose
+	//escape.LogPrint("Executing script", job.Script)
+	escape.LogPrintf("Executing job with ID %d for user '%s'", job.Id, table)
 	uid, homeDir := getUserInfo(table)
-	escape.LogPrint(job.Script)
 	cmd := exec.Command(job.Script)
 	cmd.SysProcAttr = &syscall.SysProcAttr{}
 	cmd.SysProcAttr.Credential = &syscall.Credential{Uid: uid}
@@ -33,8 +34,6 @@ func Execute(db *sql.DB, table string, job dbopts.Jobs) {
 }
 
 func ChangeExecTime(db *sql.DB, table string, job dbopts.Jobs) error {
-	//escape.LogPrint(job)
-	//escape.LogPrint(job.Exec_time)
 	crntTime, err := time.Parse("15:04:05 Jan 02 2006", job.Exec_time)
 	if err != nil {
 		return err
@@ -46,13 +45,14 @@ func ChangeExecTime(db *sql.DB, table string, job dbopts.Jobs) error {
 		return err
 	}
 
-	escape.LogPrint("Changing time to: ", job.Exec_time)
+	//Enable below when verbose
+	//escape.LogPrint("Changing time to: ", job.Exec_time)
 	err = dbopts.Insert(db, table, job, false)
 
 	if err != nil {
 		return err
 	}
-	escape.LogPrint(job.Exec_time)
+	//	escape.LogPrint(job.Exec_time)
 	return nil
 
 }
@@ -60,11 +60,11 @@ func ChangeExecTime(db *sql.DB, table string, job dbopts.Jobs) error {
 func getUserInfo(table string) (uint32, string) {
 	user, err := user.Lookup(table)
 	if err != nil {
-		escape.LogFatal(err)
+		escape.LogPrint(err)
 	}
 	userUID, err := strconv.ParseUint(user.Uid, 10, 32)
 	if err != nil {
-		escape.LogFatal(err)
+		escape.LogPrint(err)
 	}
 	return uint32(userUID), user.HomeDir
 }

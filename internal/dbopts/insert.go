@@ -3,7 +3,6 @@ package dbopts
 import (
 	"database/sql"
 	"fmt"
-	"ont/internal/escape"
 )
 
 func Insert(db *sql.DB, user string, job Jobs, new bool) error {
@@ -18,7 +17,8 @@ func Insert(db *sql.DB, user string, job Jobs, new bool) error {
 		id = setID(db, user)
 	} else {
 		id = job.Id
-		escape.LogPrint("Inserting in table")
+		//Enable below when verbose
+		//escape.LogPrint("Inserting in table")
 	}
 	fmt.Println(id)
 	//status := "Done"

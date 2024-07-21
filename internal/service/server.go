@@ -58,11 +58,10 @@ func Server(db *sql.DB) {
 		switch msg.Command {
 		case "list":
 			err, jobs := dbopts.List(db, msg.User)
-			fmt.Println(jobs)
 			if err != nil {
 				escape.Error(err.Error())
 			}
-			//response := Response{Jobs: jobs}
+
 			response := Message{
 				Command: msg.Command,
 				User:    msg.User,
