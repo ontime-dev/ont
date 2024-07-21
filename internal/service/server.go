@@ -55,6 +55,9 @@ func Server(db *sql.DB) {
 		}
 
 		escape.LogPrintf("User '%s' requested '%s' job \n", msg.User, msg.Command)
+
+		var response Message
+
 		switch msg.Command {
 		case "list":
 			err, jobs := dbopts.List(db, msg.User)
@@ -83,32 +86,48 @@ func Server(db *sql.DB) {
 		case "stop":
 			err := dbopts.ChangeJobStatus(db, msg.User, "Inactive", msg.Job)
 			if err != nil {
-				escape.Error(err.Error())
-			}
-			status := fmt.Sprintf("Job %d is inactive now.", msg.Job.Id)
-			response := Message{
-				Status: status,
+				escape.LogPrintf(err.Error())
+				status := fmt.Sprintf("Job %d is already inactive.", msg.Job.Id)
+				response = Message{
+					Status: status,
+				}
+			} else {
+				status := fmt.Sprintf("Job %d is inactive now.", msg.Job.Id)
+				response = Message{
+					Status: status,
+				}
 			}
 			sendResponse(response, clientAddr, conn)
 
 		case "start":
 			err := dbopts.ChangeJobStatus(db, msg.User, "Active", msg.Job)
 			if err != nil {
-				escape.Error(err.Error())
-			}
-			status := fmt.Sprintf("Job %d is active now.", msg.Job.Id)
-			response := Message{
-				Status: status,
+				escape.LogPrintf(err.Error())
+				status := fmt.Sprintf("Job %d is already active.", msg.Job.Id)
+				response = Message{
+					Status: status,
+				}
+			} else {
+				status := fmt.Sprintf("Job %d is active now.", msg.Job.Id)
+				response = Message{
+					Status: status,
+				}
 			}
 			sendResponse(response, clientAddr, conn)
 
 		case "remove":
+
 			if err := dbopts.RemoveJob(db, msg.User, msg.Job); err != nil {
-				escape.Error(err.Error())
-			}
-			status := fmt.Sprintf("Job %d is removed.", msg.Job.Id)
-			response := Message{
-				Status: status,
+				escape.LogPrint(err.Error())
+				status := fmt.Sprintf("Job %d doesn't exist.", msg.Job.Id)
+				response = Message{
+					Status: status,
+				}
+			} else {
+				status := fmt.Sprintf("Job %d is removed.", msg.Job.Id)
+				response = Message{
+					Status: status,
+				}
 			}
 			sendResponse(response, clientAddr, conn)
 		}

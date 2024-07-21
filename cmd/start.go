@@ -86,26 +86,5 @@ func startJob(jobid int) error {
 
 	fmt.Println(response.Status)
 
-	/*user, err := user.Current()
-	if err != nil {
-		return err
-	}
-
-	crnttime, err := run.ParseFrom(from)
-
-	if err != nil {
-		return err
-	}
-	exec_time := crnttime.Format("15:04:05 Jan 02 2006")
-	job := dbopts.Jobs{
-		Id:        jobid,
-		Status:    "Active",
-		Exec_time: exec_time,
-	}
-	dbopts.Opt("start", user.Username, job, cfgFile)
-	if err != nil {
-		return err
-	}
-	*/
 	return nil
 }

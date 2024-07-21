@@ -105,7 +105,7 @@ func PrintOneJob(db *sql.DB, table string, jobid int) (error, []Jobs) {
 
 func GetJob(db *sql.DB, table string, id int, job Jobs) (Jobs, error) {
 	job.Id = id
-	cmd := fmt.Sprintf("SELECT script,exec_time,every,status FROM %s WHERE id = %d ORDER BY timestamp DESC LIMIT 1", table, job.Id)
+	cmd := fmt.Sprintf("SELECT script,exec_time,every,status FROM %s WHERE id = %d ORDER BY timestamp DESC LIMIT 1;", table, job.Id)
 
 	err := db.QueryRow(cmd).Scan(&job.Script, &job.Exec_time, &job.Every, &job.Status)
 	if err != nil {

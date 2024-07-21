@@ -75,10 +75,5 @@ func stopJob(jobid int) error {
 
 	fmt.Println(response.Status)
 
-	// dbopts.Opt("stop", user.Username, job, cfgFile)
-	// if err != nil {
-	// 	return err
-	// }
-
 	return nil
 }

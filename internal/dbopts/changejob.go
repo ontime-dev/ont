@@ -2,8 +2,8 @@ package dbopts
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
-	"ont/internal/escape"
 	"strings"
 )
 
@@ -21,14 +21,8 @@ func ChangeJobStatus(db *sql.DB, user, Jobstatus string, job Jobs) error {
 		return err
 	}
 
-	/*	var status string
-		if Jobstatus == "Inactive" {
-			status = "stopped"
-		} else {
-			status = "started"
-		}*/
-	Jobstatus = strings.ToLower(Jobstatus[:1]) + Jobstatus[1:]
-	fmt.Printf("Job %d is now %s.\n", job.Id, Jobstatus)
+	//Jobstatus = strings.ToLower(Jobstatus[:1]) + Jobstatus[1:]
+	//fmt.Printf("Job %d is now %s.\n", job.Id, Jobstatus)
 	return nil
 }
 
@@ -47,10 +41,12 @@ func GetJobStatus(db *sql.DB, table, Jobstatus string, job Jobs) (Jobs, error) {
 		return job, err
 	}
 
+	//The below allows the users to see message "job is already active/inactive"
+
 	if oldjob.Status == Jobstatus {
 		Jobstatus = strings.ToLower(Jobstatus[:1]) + Jobstatus[1:]
 		err := fmt.Sprintf("Job %d is already %s.", job.Id, Jobstatus)
-		escape.Error(err)
+		return job, errors.New(err)
 	}
 
 	oldjob.Status = job.Status

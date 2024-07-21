@@ -20,7 +20,7 @@ func Insert(db *sql.DB, user string, job Jobs, new bool) error {
 		//Enable below when verbose
 		//escape.LogPrint("Inserting in table")
 	}
-	fmt.Println(id)
+	//fmt.Println(id)
 	//status := "Done"
 
 	cmd := fmt.Sprintf("INSERT INTO %s (id, script, exec_time, every, status) VALUES (%d, '%s', '%s', '%s', '%s');", user, id, job.Script, job.Exec_time, job.Every, job.Status)
