@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net"
 	"ont/internal/dbopts"
+	"ont/internal/escape"
 )
 
 type Message struct {
@@ -24,9 +25,11 @@ func SendMsg(message Message) (error, Message) {
 	// }
 
 	// Dial the server address
-	conn, err := net.Dial("tcp", "127.0.0.1:3033")
+	serverAddr := fmt.Sprintf("%s:%s", "localhost", "3033")
+	conn, err := net.Dial("tcp", serverAddr)
 	if err != nil {
-		fmt.Println("Error dialing:", err)
+		escape.Error("Error dialing: server is inactive")
+		//fmt.Println("Error dialing: server is inactive")
 		return err, Message{}
 	}
 	defer conn.Close()

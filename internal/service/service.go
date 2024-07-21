@@ -11,9 +11,7 @@ import (
 )
 
 func Letsgo() error {
-	cfgFile := "/etc/ont/ont.conf"
-
-	password := config.LoadConfig(cfgFile)
+	password, port := config.LoadConfig()
 	pass_cmd := fmt.Sprintf("ont:%s@/ontime", password)
 
 	db, err := sql.Open("mysql", pass_cmd)
@@ -21,7 +19,7 @@ func Letsgo() error {
 		escape.LogFatal(err)
 	}
 
-	go Server(db)
+	go Server(db, port)
 	defer db.Close()
 
 	for {

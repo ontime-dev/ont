@@ -26,7 +26,7 @@ type Message struct {
 	Status  string        `json:"status"`
 }
 
-func Server(db *sql.DB) {
+func Server(db *sql.DB, port string) {
 
 	/*addr := net.UDPAddr{
 		Port: 3033,
@@ -34,7 +34,8 @@ func Server(db *sql.DB) {
 	}*/
 
 	//conn, err := net.ListenUDP("udp", &addr)
-	listener, err := net.Listen("tcp", ":3033")
+	portNum := fmt.Sprintf(":%s", port)
+	listener, err := net.Listen("tcp", portNum)
 	if err != nil {
 		escape.Error(err.Error())
 	}
@@ -96,10 +97,17 @@ func Server(db *sql.DB) {
 		case "stop":
 			err := dbopts.ChangeJobStatus(db, msg.User, "Inactive", msg.Job)
 			if err != nil {
-				escape.LogPrintf(err.Error())
-				status := fmt.Sprintf("Job %d is already inactive.", msg.Job.Id)
-				response = Message{
-					Status: status,
+				if err.Error() == "sql: no rows in result set" {
+					status := fmt.Sprintf("Job %d doesn't exist", msg.Job.Id)
+					response = Message{
+						Status: status,
+					}
+				} else {
+					escape.LogPrintf(err.Error())
+					status := fmt.Sprintf("Job %d is already inactive.", msg.Job.Id)
+					response = Message{
+						Status: status,
+					}
 				}
 			} else {
 				status := fmt.Sprintf("Job %d is inactive now.", msg.Job.Id)
@@ -112,10 +120,17 @@ func Server(db *sql.DB) {
 		case "start":
 			err := dbopts.ChangeJobStatus(db, msg.User, "Active", msg.Job)
 			if err != nil {
-				escape.LogPrintf(err.Error())
-				status := fmt.Sprintf("Job %d is already active.", msg.Job.Id)
-				response = Message{
-					Status: status,
+				if err.Error() == "sql: no rows in result set" {
+					status := fmt.Sprintf("Job %d doesn't exist", msg.Job.Id)
+					response = Message{
+						Status: status,
+					}
+				} else {
+					escape.LogPrintf(err.Error())
+					status := fmt.Sprintf("Job %d is already active.", msg.Job.Id)
+					response = Message{
+						Status: status,
+					}
 				}
 			} else {
 				status := fmt.Sprintf("Job %d is active now.", msg.Job.Id)
