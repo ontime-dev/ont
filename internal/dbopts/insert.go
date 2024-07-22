@@ -5,12 +5,12 @@ import (
 	"fmt"
 )
 
-func Insert(db *sql.DB, user string, job Jobs, new bool) error {
+func Insert(db *sql.DB, user string, job Jobs, new bool) (int, error) {
 
 	var id int
 	err := Create(db, user)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	if new {
@@ -29,10 +29,10 @@ func Insert(db *sql.DB, user string, job Jobs, new bool) error {
 	//fmt.Println(cmd)
 	_, err = db.Exec(cmd)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	return err
+	return id, err
 
 }
 

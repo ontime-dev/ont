@@ -10,6 +10,7 @@ import (
 	"ont/internal/escape"
 
 	_ "github.com/go-sql-driver/mysql"
+	"golang.org/x/exp/rand"
 )
 
 // type Message struct {
@@ -82,12 +83,18 @@ func Server(db *sql.DB, port string) {
 			sendResponse(response, conn)
 
 		case "run":
-			err := dbopts.Insert(db, msg.User, msg.Job, true)
+			jobID, err := dbopts.Insert(db, msg.User, msg.Job, true)
 			if err != nil {
 				escape.LogPrint(err.Error())
 			}
+			fun := []string{"Perfect!", "Okay.", "Cool.", "Roger.", "Got it.", "On it.", "Sure.", "All right", "Certainly", "Of course", "Will do", "Absolutely"}
+
+			//rand.Seed(time.Now().UnixNano())
+			n := rand.Intn(len(fun))
+
+			status := fmt.Sprintf("%s New job '%d' is created.", fun[n], jobID)
 			response := Message{
-				Status: "Ok",
+				Status: status,
 			}
 			sendResponse(response, conn)
 

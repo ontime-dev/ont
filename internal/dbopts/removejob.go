@@ -20,6 +20,9 @@ func RemoveJob(db *sql.DB, table string, job Jobs) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Job %d removed from records.\n", job.Id)
+
+	//For Verbose logging
+	//escape.LogPrint("Job %d removed from records.\n", job.Id)
+
 	return nil
 }

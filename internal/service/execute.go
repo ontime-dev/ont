@@ -47,7 +47,7 @@ func ChangeExecTime(db *sql.DB, table string, job dbopts.Jobs) error {
 
 	//Enable below when verbose
 	//escape.LogPrint("Changing time to: ", job.Exec_time)
-	err = dbopts.Insert(db, table, job, false)
+	_, err = dbopts.Insert(db, table, job, false)
 
 	if err != nil {
 		return err
