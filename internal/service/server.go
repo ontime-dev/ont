@@ -63,7 +63,8 @@ func Server(db *sql.DB, port string) {
 			escape.LogPrint(err.Error())
 		}
 
-		escape.LogPrintf("User '%s' requested '%s' job \n", msg.User, msg.Command)
+		//Verbose logging
+		//escape.LogPrintf("User '%s' requested '%s' job \n", msg.User, msg.Command)
 
 		var response Message
 
