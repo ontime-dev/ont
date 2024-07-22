@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
+	"ont/internal/config"
 	"ont/internal/dbopts"
 	"ont/internal/escape"
 )
@@ -25,11 +26,16 @@ func SendMsg(message Message) (Message, error) {
 	// }
 
 	// Dial the server address
-	serverAddr := fmt.Sprintf("%s:%s", "localhost", "3033")
+	port := config.GetConfig("SERVER_PORT")
+	serverAddr := fmt.Sprintf("%s:%s", "localhost", port)
+	// port := config.Port
+	// fmt.Println(port)
+	// serverAddr := fmt.Sprintf("%s:%s", "localhost", port)
+	// fmt.Println(serverAddr)
 	conn, err := net.Dial("tcp", serverAddr)
 	if err != nil {
-		escape.Error("Error dialing: server is inactive\n")
-		//fmt.Println("Error dialing: server is inactive")
+		escape.Error(err.Error())
+		//fmt.Println("Error dialing: Server is inactive")
 		return Message{}, err
 	}
 	defer conn.Close()
@@ -54,7 +60,7 @@ func SendMsg(message Message) (Message, error) {
 	//fmt.Printf("Raw buffer content: %s\n", string(buffer[:n]))
 	response, err := bufio.NewReader(conn).ReadString('\n')
 	if err != nil {
-		fmt.Println("Error reading from connection:", err)
+		escape.Error("Error reading from connection:", err)
 	}
 
 	var responsemsg Message

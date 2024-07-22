@@ -11,7 +11,7 @@ import (
 )
 
 func Letsgo() error {
-	password, port := config.LoadConfig()
+	password, port := config.GetConfig("DBPASS"), config.GetConfig("SERVER_PORT")
 	pass_cmd := fmt.Sprintf("ont:%s@/ontime", password)
 
 	db, err := sql.Open("mysql", pass_cmd)
@@ -39,17 +39,16 @@ func Letsgo() error {
 		var wg sync.WaitGroup
 		for _, table := range allTables {
 			wg.Add(1)
-			//escape.LogPrint(table)
+
 			go ProcessTable(db, table, &wg)
 		}
 		wg.Wait()
-		//escape.LogPrint("I AM DONE")
-		//time.Sleep(time.Second * 1)
+
 	}
 }
 
 func ProcessTable(db *sql.DB, table string, wg *sync.WaitGroup) {
-	//escape.LogPrint("Processing Table ", table)
+
 	defer wg.Done()
 	var job dbopts.Jobs
 
@@ -57,7 +56,7 @@ func ProcessTable(db *sql.DB, table string, wg *sync.WaitGroup) {
 	if err != nil {
 		escape.LogPrint(err)
 	}
-	//escape.LogPrint(table)
+
 	for id := 1; id <= maxID; id++ {
 		job, err := dbopts.GetJob(db, table, id, job)
 		if err != nil {

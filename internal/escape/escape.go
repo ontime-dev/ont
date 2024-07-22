@@ -8,6 +8,8 @@ import (
 
 func Error(err string, values ...any) {
 	fmt.Printf(err, values...)
+	fmt.Println()
+	os.Exit(1)
 }
 
 /*

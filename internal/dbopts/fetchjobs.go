@@ -88,7 +88,7 @@ func PrintOneJob(db *sql.DB, table string, jobid int) (error, []Jobs) {
 	err := db.QueryRow(cmd).Scan(&script, &exec_time, &every, &status)
 	if err != nil {
 		if err.Error() == "sql: no rows in result set" {
-			escape.Error("Job %d doesn't exist!\n", jobid)
+			escape.LogPrintf("Job %d doesn't exist!\n", jobid)
 		}
 	}
 	job := Jobs{

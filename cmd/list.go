@@ -65,8 +65,6 @@ func listJobs(jobid int) error {
 	/*job := []dbopts.Jobs{
 		Id: jobid,
 	}*/
-	fmt.Printf("ID \t Script \t \t Next Execution Time \t Intervals \t Status \n")
-	fmt.Println("----------------------------------------------------------------------------------")
 
 	//jobs, err := dbopts.Opt("list", user.Username, job, cfgFile)
 	//	fmt.Println(jobs)
@@ -78,6 +76,9 @@ func listJobs(jobid int) error {
 	if err != nil {
 		return err
 	}
+
+	fmt.Printf("ID \t Script \t \t Next Execution Time \t Intervals \t Status \n")
+	fmt.Println("----------------------------------------------------------------------------------")
 
 	for _, job := range response.Jobs {
 		fmt.Printf("%d \t| %s \t| %s \t| %s \t \t| %s\n", job.Id, job.Script, job.Exec_time, job.Every, job.Status)

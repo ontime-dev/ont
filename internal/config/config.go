@@ -6,16 +6,24 @@ import (
 	"github.com/spf13/viper"
 )
 
-var cfgFile = "/etc/ont/ont.conf"
+const (
+	CfgFile  = "/etc/ont/ont.conf"
+	PassFile = "/etc/ont/ont.pass"
+)
 
-func LoadConfig() (password, port string) {
-	viper.SetConfigFile(cfgFile)
+func GetConfig(parameter string) string {
+	file := CfgFile
+
+	if parameter == "DBPASS" {
+		file = PassFile
+	}
+
+	viper.SetConfigFile(file)
 	viper.SetConfigType("env")
 
 	err := viper.ReadInConfig()
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-
-	return viper.GetString("DBPASS"), viper.GetString("SERVER_PORT")
+	return viper.GetString(parameter)
 }

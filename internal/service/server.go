@@ -37,7 +37,7 @@ func Server(db *sql.DB, port string) {
 	portNum := fmt.Sprintf(":%s", port)
 	listener, err := net.Listen("tcp", portNum)
 	if err != nil {
-		escape.Error(err.Error())
+		escape.LogFatal(err.Error())
 	}
 
 	defer listener.Close()
@@ -51,10 +51,7 @@ func Server(db *sql.DB, port string) {
 		reader := bufio.NewReader(conn)
 		message, err := reader.ReadString('\n')
 		if err != nil {
-			fmt.Println("Error reading from connection:", err)
-		}
-		if err != nil {
-			escape.Error(err.Error())
+			escape.LogPrint("Error reading from connection:", err)
 		}
 
 		var msg Message
@@ -62,7 +59,7 @@ func Server(db *sql.DB, port string) {
 		//err = json.Unmarshal(buffer[:n], &msg)
 		err = json.Unmarshal([]byte(message), &msg)
 		if err != nil {
-			escape.Error(err.Error())
+			escape.LogPrint(err.Error())
 		}
 
 		escape.LogPrintf("User '%s' requested '%s' job \n", msg.User, msg.Command)
@@ -73,7 +70,7 @@ func Server(db *sql.DB, port string) {
 		case "list":
 			err, jobs := dbopts.List(db, msg.User)
 			if err != nil {
-				escape.Error(err.Error())
+				escape.LogPrint(err.Error())
 			}
 
 			response := Message{
@@ -87,7 +84,7 @@ func Server(db *sql.DB, port string) {
 		case "run":
 			err := dbopts.Insert(db, msg.User, msg.Job, true)
 			if err != nil {
-				escape.Error(err.Error())
+				escape.LogPrint(err.Error())
 			}
 			response := Message{
 				Status: "Ok",
