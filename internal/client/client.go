@@ -17,7 +17,7 @@ type Message struct {
 	Status  string        `json:"status"`
 }
 
-func SendMsg(message Message) (error, Message) {
+func SendMsg(message Message) (Message, error) {
 	// serverAddr, err := net.ResolveUDPAddr("udp", "127.0.0.1:3033")
 	// if err != nil {
 	// 	fmt.Println("Error resolving address:", err)
@@ -28,22 +28,22 @@ func SendMsg(message Message) (error, Message) {
 	serverAddr := fmt.Sprintf("%s:%s", "localhost", "3033")
 	conn, err := net.Dial("tcp", serverAddr)
 	if err != nil {
-		escape.Error("Error dialing: server is inactive")
+		escape.Error("Error dialing: server is inactive\n")
 		//fmt.Println("Error dialing: server is inactive")
-		return err, Message{}
+		return Message{}, err
 	}
 	defer conn.Close()
 
 	messageData, err := json.Marshal(message)
 	if err != nil {
 		fmt.Println("Error marshaling JSON:", err)
-		return err, Message{}
+		return Message{}, err
 	}
 
 	_, err = conn.Write(append(messageData, '\n'))
 	if err != nil {
 		fmt.Println(err.Error())
-		return err, Message{}
+		return Message{}, err
 	}
 
 	// buffer := make([]byte, 2048)
@@ -67,7 +67,7 @@ func SendMsg(message Message) (error, Message) {
 
 	//fmt.Println("Server response:", response.Job)
 
-	return nil, responsemsg
+	return responsemsg, nil
 }
 
 /*

@@ -74,7 +74,7 @@ func listJobs(jobid int) error {
 		Command: "list",
 		User:    user.Username,
 	}
-	err, response := client.SendMsg(message)
+	response, err := client.SendMsg(message)
 	if err != nil {
 		return err
 	}

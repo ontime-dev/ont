@@ -79,7 +79,7 @@ func startJob(jobid int) error {
 		Job:     job,
 	}
 
-	err, response := client.SendMsg(message)
+	response, err := client.SendMsg(message)
 	if err != nil {
 		return err
 	}
