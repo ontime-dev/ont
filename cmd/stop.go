@@ -18,7 +18,7 @@ import (
 var stopCmd = &cobra.Command{
 	Use:   "stop <jobID>",
 	Short: "Stops the execution of a job",
-	Long:  `Running 'ont stop' will mark the job <jobID> as inactive and the job will stop being executed`,
+	Long:  `Marks the job with id=<jobID> as inactive and the job will be suspended.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 1 {
 			return errors.New("please specify the job ID")

@@ -34,11 +34,10 @@ var flags struct {
 var runCmd = &cobra.Command{
 	Use:   "run <script>",
 	Short: "Run the script",
-	Long: `This command runs the script in the specified time. 
+	Long:  `Runs a provided script in a specific date and time and on a specific intervals that are provided as arguments.`,
 
-For example:
-  ont run --every 1hr --from now /path/to/script.sh
-  ont run --every 1d --from tomorrow /path/to/script.sh 
+	Example: `  ont run --every 1hr --from now /path/to/script.sh
+  ont run --every 1d --from tomorrow /path/to/script.sh
   ont run --hour 01 /path/to/script.sh
   ont run --every 1d --from dd-MM-yyyy /path/to/script.sh
   ont run --every 1d --from dd-MM-yyyyThh:mm:ss /path/to/script.sh`,
@@ -104,7 +103,10 @@ func runJob(script []string) error {
 	script_path := script[0]
 
 	if !filepath.IsAbs(script_path) {
-		script_path, _ = filepath.Abs(script_path)
+		script_path, err = filepath.Abs(script_path)
+		if err != nil {
+			return err
+		}
 	}
 
 	//Check if script exists.

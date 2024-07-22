@@ -15,7 +15,7 @@ import (
 var daemonCmd = &cobra.Command{
 	Use:   "daemon",
 	Short: "Run in daemon mode",
-	Long:  `Executing "ont daemon" runs the application in daemon mode`,
+	Long:  `Runs the application in daemon mode`,
 	Run: func(cmd *cobra.Command, args []string) {
 		work()
 	},

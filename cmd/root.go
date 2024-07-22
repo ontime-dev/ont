@@ -12,12 +12,16 @@ import (
 //const customUsage = `Usage:
 //ont [command] <script>`
 
+//var version bool
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "ont",
-	Args:  cobra.MatchAll(cobra.ExactArgs(2), cobra.OnlyValidArgs),
-	Short: "Schedule your jobs and run them",
-	Long:  `ont is a CLI application to schedule running a script or a job on the node. It is an extended version of cronjobs.`,
+	Use:       "ont",
+	Args:      cobra.MatchAll(cobra.ExactArgs(2), cobra.OnlyValidArgs),
+	Version:   " ",
+	ValidArgs: []string{"run", "stop", "start", "list", "remove", "version"},
+	Short:     "Schedule your jobs and run them",
+	Long:      `ont is a CLI application to schedule running a script or a job on the node. It is an extended version of cronjobs.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -34,6 +38,7 @@ func Execute() {
 
 func init() {
 	//cobra.OnInitialize(initConfig)
+	rootCmd.SetVersionTemplate("V.1.07 \n")
 	rootCmd.CompletionOptions.HiddenDefaultCmd = true
 	//rootCmd.SetUsageFunc(Usage)
 	//rootCmd.SetUsageTemplate(customUsage)
@@ -43,7 +48,7 @@ func init() {
 	// will be global for your application.
 
 	//rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "/etc/ont/ont.conf", "config file")
-
+	//rootCmd.Flags().BoolVarP(&version, "version", "v", false, "Version of ont")
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 }

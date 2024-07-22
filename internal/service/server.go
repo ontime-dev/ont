@@ -67,7 +67,7 @@ func Server(db *sql.DB, port string) {
 		//escape.LogPrintf("User '%s' requested '%s' job \n", msg.User, msg.Command)
 
 		var response Message
-		fun := []string{"Okay.", "Cool.", "Roger.", "Got it.", "On it.", "Sure.", "All right.", "Certainly.", "Of course.", "Will do.", "Absolutely."}
+		fun := []string{"Okay.", "Cool.", "Roger.", "Got it.", "On it.", "Sure.", "All right.", "Certainly.", "Will do.", "Absolutely."}
 
 		switch msg.Command {
 		case "list":

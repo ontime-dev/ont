@@ -17,14 +17,9 @@ import (
 
 // removeCmd represents the remove command
 var removeCmd = &cobra.Command{
-	Use:   "remove [jobid]",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Use:   "remove <jobid>",
+	Short: "Removes the job from records.",
+	Long:  `Removes the job with id=<jobid> completely from records.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if len(args) == 1 {
 			jobID, err := strconv.Atoi(args[0])

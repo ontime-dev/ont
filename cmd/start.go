@@ -20,8 +20,9 @@ var from string
 // startCmd represents the start command
 var startCmd = &cobra.Command{
 	Use:   "start <jobID>",
+	Args:  cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs),
 	Short: "Starts the execution of a job",
-	Long:  `Running 'ont start' will mark the job <jobID> as active and the job will start being executed`,
+	Long:  `Marks the job with id=<jobID> as active and the job will start being executed.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 1 {
 			return errors.New("please specify the job ID")
@@ -42,7 +43,13 @@ var startCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(startCmd)
+	startCmd.SetUsageTemplate(`Usage:
+  ont start [flags] <jobID>
 
+Flags:
+  -f, --from string   Start the job from a specific time and date. (default "now")
+  -h, --help          help for start
+`)
 	startCmd.Flags().StringVarP(&from, "from", "f", "now", "Start the job from a specific time and date.")
 
 	// Here you will define your flags and configuration settings.
