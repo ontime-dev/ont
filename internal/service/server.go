@@ -67,6 +67,7 @@ func Server(db *sql.DB, port string) {
 		//escape.LogPrintf("User '%s' requested '%s' job \n", msg.User, msg.Command)
 
 		var response Message
+		fun := []string{"Okay.", "Cool.", "Roger.", "Got it.", "On it.", "Sure.", "All right.", "Certainly.", "Of course.", "Will do.", "Absolutely."}
 
 		switch msg.Command {
 		case "list":
@@ -88,9 +89,7 @@ func Server(db *sql.DB, port string) {
 			if err != nil {
 				escape.LogPrint(err.Error())
 			}
-			fun := []string{"Perfect!", "Okay.", "Cool.", "Roger.", "Got it.", "On it.", "Sure.", "All right", "Certainly", "Of course", "Will do", "Absolutely"}
 
-			//rand.Seed(time.Now().UnixNano())
 			n := rand.Intn(len(fun))
 
 			status := fmt.Sprintf("%s New job '%d' is created.", fun[n], jobID)
@@ -115,7 +114,8 @@ func Server(db *sql.DB, port string) {
 					}
 				}
 			} else {
-				status := fmt.Sprintf("Job %d is inactive now.", msg.Job.Id)
+				n := rand.Intn(len(fun))
+				status := fmt.Sprintf("%s Job %d is inactive now.", fun[n], msg.Job.Id)
 				response = Message{
 					Status: status,
 				}
@@ -138,7 +138,8 @@ func Server(db *sql.DB, port string) {
 					}
 				}
 			} else {
-				status := fmt.Sprintf("Job %d is active now.", msg.Job.Id)
+				n := rand.Intn(len(fun))
+				status := fmt.Sprintf("%s Job %d is active now.", fun[n], msg.Job.Id)
 				response = Message{
 					Status: status,
 				}
@@ -154,7 +155,8 @@ func Server(db *sql.DB, port string) {
 					Status: status,
 				}
 			} else {
-				status := fmt.Sprintf("Job %d is removed.", msg.Job.Id)
+				n := rand.Intn(len(fun))
+				status := fmt.Sprintf("%s Job %d is removed.", fun[n], msg.Job.Id)
 				response = Message{
 					Status: status,
 				}

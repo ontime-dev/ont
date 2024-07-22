@@ -62,12 +62,7 @@ func listJobs(jobid int) error {
 	if err != nil {
 		log.Fatal(err)
 	}
-	/*job := []dbopts.Jobs{
-		Id: jobid,
-	}*/
 
-	//jobs, err := dbopts.Opt("list", user.Username, job, cfgFile)
-	//	fmt.Println(jobs)
 	message := client.Message{
 		Command: "list",
 		User:    user.Username,
@@ -84,12 +79,6 @@ func listJobs(jobid int) error {
 		fmt.Printf("%d \t| %s \t| %s \t| %s \t \t| %s\n", job.Id, job.Script, job.Exec_time, job.Every, job.Status)
 	}
 
-	//	fmt.Println("RESPONSE: ", len(response.Job))
-
-	//err = client.RecieveRspns()
-	/*for _, job := range jobs {
-		fmt.Printf("%d \t| %s \t| %s \t| %s \t \t| %s\n", job.Id, job.Script, job.Exec_time, job.Every, job.Status)
-	}*/
 	if err != nil {
 		return err
 	}
