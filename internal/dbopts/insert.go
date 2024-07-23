@@ -3,6 +3,7 @@ package dbopts
 import (
 	"database/sql"
 	"fmt"
+	"ont/internal/escape"
 	"strings"
 )
 
@@ -22,12 +23,13 @@ func Insert(db *sql.DB, user string, job Jobs, new bool) (int, error) {
 		//escape.LogPrint("Inserting in table")
 	}
 
-	cmd := fmt.Sprintf("INSERT INTO %s (id, script, exec_time, every, status) VALUES (%d, '%s', '%s', '%s', '%s');", user, id, job.Script, job.Exec_time, job.Every, job.Status)
-
+	cmd := fmt.Sprintf("INSERT INTO %s (id, script, exec_time, every, status, runon) VALUES (%d, '%s', '%s', '%s', '%s', '%s');", user, id, job.Script, job.Exec_time, job.Every, job.Status, job.RunOn)
 	_, err = db.Exec(cmd)
 	if err != nil {
 		return 0, err
 	}
+
+	escape.LogPrintf("New entry inserted for job %d", id)
 
 	return id, err
 
@@ -42,6 +44,9 @@ func setID(db *sql.DB, table string) int {
 		}
 	}
 	maxID += 1
+
+	//verbose logging
+	escape.LogPrintf("Job Id=%d assigned to new job.", maxID)
 
 	return maxID
 }

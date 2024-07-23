@@ -141,6 +141,7 @@ func runJob(script []string) error {
 		Exec_time: exec_time,
 		Every:     flags.every,
 		Status:    "Active",
+		RunOn:     flags.nodes,
 	}
 
 	message := client.Message{
@@ -165,9 +166,6 @@ func runJob(script []string) error {
 
 	fmt.Println(response.Status)
 
-	if err != nil {
-		return err
-	}
 	return nil
 }
 

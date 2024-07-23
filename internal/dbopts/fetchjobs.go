@@ -7,7 +7,7 @@ import (
 )
 
 func List(db *sql.DB, user string) ([]Jobs, error) {
-	err, jobs := PrintJobs(db, user)
+	jobs, err := PrintJobs(db, user)
 	if err != nil {
 		return nil, err
 	}
@@ -32,12 +32,12 @@ func List(db *sql.DB, user string) ([]Jobs, error) {
 		}*/
 }
 
-func PrintJobs(db *sql.DB, table string) (error, []Jobs) {
+func PrintJobs(db *sql.DB, table string) ([]Jobs, error) {
 	var jobs []Jobs
 	maxID, err := GetMaxID(db, table)
 	var job Jobs
 	if err != nil {
-		return err, jobs
+		return jobs, err
 	}
 	escape.LogPrint(maxID)
 
@@ -47,17 +47,17 @@ func PrintJobs(db *sql.DB, table string) (error, []Jobs) {
 		escape.LogPrint(job)
 		if err != nil {
 			if err.Error() != "sql: no rows in result set" {
-				return err, jobs
+				return jobs, err
 			}
 		}
 		jobs = append(jobs, job)
 
 	}
 
-	return nil, jobs
+	return jobs, nil
 }
 
-func PrintOneJob(db *sql.DB, table string, jobid int) (error, []Jobs) {
+func PrintOneJob(db *sql.DB, table string, jobid int) ([]Jobs, error) {
 	var jobs []Jobs
 	var script, exec_time, every, status string
 	cmd := fmt.Sprintf("select script,exec_time,every,status from %s where id=%d ORDER BY timestamp DESC LIMIT 1;", table, jobid)
@@ -75,15 +75,15 @@ func PrintOneJob(db *sql.DB, table string, jobid int) (error, []Jobs) {
 		Status:    status,
 	}
 	jobs = append(jobs, job)
-	return nil, jobs
+	return jobs, nil
 
 }
 
 func GetJob(db *sql.DB, table string, id int, job Jobs) (Jobs, error) {
 	job.Id = id
-	cmd := fmt.Sprintf("SELECT script,exec_time,every,status FROM %s WHERE id = %d ORDER BY timestamp DESC LIMIT 1;", table, job.Id)
+	cmd := fmt.Sprintf("SELECT script,exec_time,every,status,runon FROM %s WHERE id = %d ORDER BY timestamp DESC LIMIT 1;", table, job.Id)
 
-	err := db.QueryRow(cmd).Scan(&job.Script, &job.Exec_time, &job.Every, &job.Status)
+	err := db.QueryRow(cmd).Scan(&job.Script, &job.Exec_time, &job.Every, &job.Status, &job.RunOn)
 	if err != nil {
 		return job, err
 	}

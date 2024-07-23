@@ -10,4 +10,5 @@ type Jobs struct {
 	Exec_time string
 	Every     string
 	Status    string
+	RunOn     string
 }
