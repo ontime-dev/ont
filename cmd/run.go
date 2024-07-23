@@ -44,6 +44,7 @@ var runCmd = &cobra.Command{
   ont run --every 1d --from dd-MM-yyyyThh:mm:ss /path/to/script.sh`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		err := runJob(args)
+
 		//fmt.Println(cmd.Flags().Lookup("every").Value.String())
 		return err
 	},
@@ -91,6 +92,14 @@ func init() {
 }
 
 func runJob(script []string) error {
+	defer func() error {
+		if r := recover(); r != nil {
+			fmt.Println("Invalid input")
+			os.Exit(1)
+		}
+
+		return nil
+	}()
 
 	if len(script) != 1 {
 		return errors.New("invalid number of arguments")
