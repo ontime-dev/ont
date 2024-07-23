@@ -8,6 +8,7 @@ import (
 	"net"
 	"ont/internal/dbopts"
 	"ont/internal/escape"
+	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
 	"golang.org/x/exp/rand"
@@ -49,7 +50,7 @@ func Server(db *sql.DB, ip, port string) {
 		}
 
 		//Verbose logging
-		escape.LogPrintf("User '%s' requested '%s' job \n", msg.User, msg.Command)
+		//escape.LogPrintf("User '%s' requested '%s' job \n", msg.User, msg.Command)
 
 		var response Message
 		fun := []string{"Okay.", "Cool.", "Roger.", "Got it.", "On it.", "Sure.", "All right.", "Certainly.", "Will do.", "Absolutely."}
@@ -180,6 +181,23 @@ func Server(db *sql.DB, ip, port string) {
 				}
 			}
 			sendResponse(response, conn)
+
+		case "clean":
+			status := "All your entries are removed"
+			err := dbopts.CleanAllJobs(db, msg.User)
+			if err != nil {
+				//Verbose Logging
+				if strings.Contains(err.Error(), "Unknown table") {
+					status = "You don't have any jobs to clean."
+				} else {
+					escape.LogPrint(err.Error())
+				}
+			}
+
+			response := Message{
+				Status: status,
+			}
+			sendResponse(response, conn)
 		}
 		conn.Close()
 	}
@@ -190,11 +208,11 @@ func sendResponse(response any, conn net.Conn) {
 
 	responseData, err := json.Marshal(response)
 	if err != nil {
-		fmt.Println("Error marshaling JSON:", err)
+		escape.LogPrint("Error marshaling JSON:", err)
 	}
 
 	_, err = conn.Write(append(responseData, '\n'))
 	if err != nil {
-		fmt.Println("Error writing to UDP:", err)
+		escape.LogPrint("Error writing to UDP:", err)
 	}
 }

@@ -28,6 +28,7 @@ var flags struct {
 	month string
 	year  string
 	yes   bool
+	nodes string
 }
 
 // runCmd represents the run command
@@ -64,8 +65,9 @@ func init() {
 	runCmd.Flags().StringVarP(&flags.day, "day", "d", "", "Specify the days.")
 	runCmd.Flags().StringVarP(&flags.month, "month", "M", "", "Specify the month.")
 	runCmd.Flags().StringVarP(&flags.year, "year", "Y", "", "Specify the year.")
+	runCmd.Flags().StringVarP(&flags.nodes, "nodes", "n", "local", "Specify the node list to run the job on")
 
-	runCmd.Flags().BoolVarP(&flags.yes, "yes", "y", false, "Continue with asking for confirmation")
+	runCmd.Flags().BoolVarP(&flags.yes, "yes", "y", false, "Continue without asking for confirmation")
 
 	runCmd.MarkFlagsRequiredTogether("every", "from")
 
@@ -132,19 +134,19 @@ func runJob(script []string) error {
 		Status:    "Active",
 	}
 
-	if !flags.yes {
-		if flags.from != "now" {
-			err := confirm(job)
-			if err != nil {
-				return err
-			}
-		}
-	}
-
 	message := client.Message{
 		Command: "run",
 		User:    user.Username,
 		Job:     job,
+	}
+
+	if !flags.yes {
+		if flags.from != "now" {
+			err := confirm(message)
+			if err != nil {
+				return err
+			}
+		}
 	}
 
 	response, err := client.SendMsg(message)
@@ -160,13 +162,21 @@ func runJob(script []string) error {
 	return nil
 }
 
-func confirm(job dbopts.Jobs) error {
+func confirm(message client.Message) error {
+	var stdout_msg string
 
-	fmt.Printf(
-		`Script: %s
+	if message.Command == "run" {
+		stdout_msg = fmt.Sprintf(
+			`Script: %s
 Next Execution time: %s 
 Interval: %s
-`, job.Script, job.Exec_time, job.Every)
+`, message.Job.Script, message.Job.Exec_time, message.Job.Exec_time)
+	} else if message.Command == "clean" {
+		stdout_msg = "You are about to remove all jobs and entries."
+	}
+
+	fmt.Println(stdout_msg)
+
 	for {
 		fmt.Printf("Continue?(n/Y):")
 		scanner := bufio.NewScanner(os.Stdin)
@@ -183,3 +193,27 @@ Interval: %s
 		}
 	}
 }
+
+// func confirm(job dbopts.Jobs) error {
+
+// 	fmt.Printf(
+// 		`Script: %s
+// Next Execution time: %s
+// Interval: %s
+// `, job.Script, job.Exec_time, job.Every)
+// 	for {
+// 		fmt.Printf("Continue?(n/Y):")
+// 		scanner := bufio.NewScanner(os.Stdin)
+// 		scanner.Scan()
+// 		input := scanner.Text()
+
+// 		switch input {
+// 		case "n", "N":
+// 			os.Exit(0)
+// 		case "y", "Y", "":
+// 			return nil
+// 		default:
+// 			fmt.Println("Invalid Choice!")
+// 		}
+// 	}
+// }
