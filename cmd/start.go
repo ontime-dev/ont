@@ -31,7 +31,7 @@ var startCmd = &cobra.Command{
 
 		jobid, err := strconv.Atoi(args[0])
 		if err != nil {
-			return err
+			return errors.New("please insert a valid jobid")
 		}
 
 		err = startJob(jobid)
