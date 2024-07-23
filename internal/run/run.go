@@ -8,27 +8,18 @@ import (
 	"time"
 )
 
-func ParseTimeDate() {
+// func ParseTimeDate() {
 
-}
+// }
 
 func ParseEvryFrom(every, from string) (string, error) {
-	/*
-		number, err := strconv.Atoi(every[:len(every)-1])
-		if err != nil {
-			return "", err
-		}
 
-		last_char := every[len(every)-1:]
-		//fmt.Println(last_char)
-	*/
 	number, last_char := GetLastChar(every)
 
 	next_run, err := setNextRun(last_char, from, number)
 	if err != nil {
 		return "", err
 	}
-	//fmt.Printf("Second run:\n%s\n", next_run)
 
 	return next_run, err
 
@@ -55,7 +46,7 @@ func ParseFrom(from string) (time.Time, error) {
 			from = crntTime.Format("02-01-2006") + " " + from
 		} else if strings.Contains(from, "+") {
 			from_string := strings.Split(from, "+")
-			//from := from_string[0]
+
 			num, last_char := GetLastChar(from_string[1])
 			from, err = ParseEvery(crntTime, last_char, num)
 			if err != nil {
@@ -102,7 +93,7 @@ func ParseEvery(crntTime time.Time, last_char string, number int) (string, error
 		fmt.Println("every year")
 		return next_run, nil
 	default:
-		return "", errors.New("Please specify a valid option with --every flag.")
+		return "", errors.New("please specify a valid option with --every flag")
 	}
 }
 
@@ -122,15 +113,13 @@ func setNextRun(last_char, from string, number int) (string, error) {
 		return "", err
 	}
 
-	//fmt.Println("Next Run: ", crntTime.Format("15:04:05 Jan 02 2006"))
 	//function to insert the next_run in the database
 	next_run := crntTime.Format("15:04:05 Jan 02 2006")
-	//_, err = parseEvery(crntTime, last_char, number)
+
 	err = lastCharValidity(last_char)
 	if err != nil {
 		return "", err
 	}
-	//next_run, err = parseEvery(crntTime, last_char, number)
 
 	return next_run, nil
 

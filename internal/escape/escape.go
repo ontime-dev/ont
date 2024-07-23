@@ -12,12 +12,6 @@ func Error(err string, values ...any) {
 	os.Exit(1)
 }
 
-/*
-func ErrorWithZeroRC(err string) {
-	fmt.Println(err)
-	os.Exit(0)
-}*/
-
 func Init() *os.File {
 	logFile, err := os.OpenFile("/var/log/ont.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
@@ -28,12 +22,6 @@ func Init() *os.File {
 }
 
 func NewLogger() (*log.Logger, *os.File) {
-
-	// logFile, err := os.OpenFile("/var/log/ont.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-
-	// if err != nil {
-	// 	Error(err.Error())
-	// }
 
 	logFile := Init()
 

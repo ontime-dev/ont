@@ -125,12 +125,6 @@ func runJob(script []string) error {
 		return err
 	}
 
-	//err = dbopts.Create(user.Username)
-
-	//job := new(Jobs)
-	//job.Script = script_path
-	//job.Next_run = next_run
-
 	job := dbopts.Jobs{
 		Script:    script_path,
 		Exec_time: exec_time,
@@ -189,9 +183,3 @@ Interval: %s
 		}
 	}
 }
-
-/*
-func jobExec(script string) {
-	cmd := exec.Command("sh", "-c", script)
-	cmd.Run()
-}*/

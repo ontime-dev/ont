@@ -80,7 +80,6 @@ func startJob(jobid int) error {
 		command = "refresh"
 	}
 
-	//fmt.Println(job.Exec_time)
 	message := client.Message{
 		Command: command,
 		User:    user.Username,

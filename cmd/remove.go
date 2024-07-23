@@ -75,9 +75,6 @@ func removeJob(jobid int) error {
 
 	fmt.Println(response.Status)
 
-	//err = dbopts.Opt("remove", user.Username, job, cfgFile)
-	//dbopts.Opt("remove", user.Username, job, cfgFile)
-
 	if err != nil {
 		return err
 	}

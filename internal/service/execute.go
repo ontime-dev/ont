@@ -38,7 +38,7 @@ func ChangeExecTime(db *sql.DB, table string, job dbopts.Jobs) error {
 	if err != nil {
 		return err
 	}
-	//escape.LogPrint(crntTime.Format("15:04:05 Jan 02 2006"))
+
 	number, last_char := run.GetLastChar(job.Every)
 	job.Exec_time, err = run.ParseEvery(crntTime, last_char, number)
 	if err != nil {
@@ -52,7 +52,6 @@ func ChangeExecTime(db *sql.DB, table string, job dbopts.Jobs) error {
 	if err != nil {
 		return err
 	}
-	//	escape.LogPrint(job.Exec_time)
 	return nil
 
 }

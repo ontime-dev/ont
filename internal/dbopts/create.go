@@ -19,7 +19,6 @@ const table = `(
 func Create(db *sql.DB, user string) error {
 
 	cmd := "CREATE TABLE IF NOT EXISTS " + user + table + ";"
-	//fmt.Println(cmd)
 
 	_, err := db.Exec(cmd)
 	if err != nil {
@@ -30,8 +29,3 @@ func Create(db *sql.DB, user string) error {
 	return nil
 
 }
-
-/*
-func IsExist(err error) {
-	if
-}*/

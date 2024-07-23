@@ -23,12 +23,6 @@ type Message struct {
 
 func Server(db *sql.DB, port string) {
 
-	/*addr := net.UDPAddr{
-		Port: 3033,
-		IP:   net.ParseIP("127.0.0.1"),
-	}*/
-
-	//conn, err := net.ListenUDP("udp", &addr)
 	portNum := fmt.Sprintf(":%s", port)
 	listener, err := net.Listen("tcp", portNum)
 	if err != nil {
@@ -38,10 +32,8 @@ func Server(db *sql.DB, port string) {
 	defer listener.Close()
 	escape.LogPrint("Ontd server running on port 3033")
 
-	//buffer := make([]byte, 1024)
-
 	for {
-		//n, clientAddr, err := conn.ReadFromUDP(buffer)
+
 		conn, _ := listener.Accept()
 		reader := bufio.NewReader(conn)
 		message, err := reader.ReadString('\n')
@@ -50,8 +42,7 @@ func Server(db *sql.DB, port string) {
 		}
 
 		var msg Message
-		//defer conn.Close()
-		//err = json.Unmarshal(buffer[:n], &msg)
+
 		err = json.Unmarshal([]byte(message), &msg)
 		if err != nil {
 			escape.LogPrint(err.Error())
@@ -190,14 +181,11 @@ func Server(db *sql.DB, port string) {
 			}
 			sendResponse(response, conn)
 		}
-
-		//	:= dbopts.Opt(msg.Command, msg.User, msg.Job, cfgFile)
 		conn.Close()
 	}
 
 }
 
-// func sendResponse(response any, clientAddr *net.UDPAddr, conn *net.UDPConn) {
 func sendResponse(response any, conn net.Conn) {
 
 	responseData, err := json.Marshal(response)
@@ -205,7 +193,6 @@ func sendResponse(response any, conn net.Conn) {
 		fmt.Println("Error marshaling JSON:", err)
 	}
 
-	//_, err = conn.WriteToUDP(responseData, clientAddr)
 	_, err = conn.Write(append(responseData, '\n'))
 	if err != nil {
 		fmt.Println("Error writing to UDP:", err)

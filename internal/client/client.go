@@ -19,23 +19,14 @@ type Message struct {
 }
 
 func SendMsg(message Message) (Message, error) {
-	// serverAddr, err := net.ResolveUDPAddr("udp", "127.0.0.1:3033")
-	// if err != nil {
-	// 	fmt.Println("Error resolving address:", err)
-	// 	return err, Message{}
-	// }
 
 	// Dial the server address
 	port := config.GetConfig("SERVER_PORT")
 	serverAddr := fmt.Sprintf("%s:%s", "localhost", port)
-	// port := config.Port
-	// fmt.Println(port)
-	// serverAddr := fmt.Sprintf("%s:%s", "localhost", port)
-	// fmt.Println(serverAddr)
+
 	conn, err := net.Dial("tcp", serverAddr)
 	if err != nil {
 		escape.Error(err.Error())
-		//fmt.Println("Error dialing: Server is inactive")
 		return Message{}, err
 	}
 	defer conn.Close()
@@ -52,12 +43,6 @@ func SendMsg(message Message) (Message, error) {
 		return Message{}, err
 	}
 
-	// buffer := make([]byte, 2048)
-	// n, _, err := conn.ReadFromUDP(buffer)
-	// if err != nil {
-	// 	fmt.Println("Error receiving response:", err)
-	// }
-	//fmt.Printf("Raw buffer content: %s\n", string(buffer[:n]))
 	response, err := bufio.NewReader(conn).ReadString('\n')
 	if err != nil {
 		escape.Error("Error reading from connection:", err)
@@ -65,42 +50,10 @@ func SendMsg(message Message) (Message, error) {
 
 	var responsemsg Message
 	err = json.Unmarshal([]byte(response), &responsemsg)
-	// fmt.Println(n)
-	// fmt.Println(buffer)
+
 	if err != nil {
 		fmt.Println("Error unmarshaling JSON:", err)
 	}
 
-	//fmt.Println("Server response:", response.Job)
-
 	return responsemsg, nil
 }
-
-/*
-func RecieveRspns() error {
-	serverAddr, err := net.ResolveUDPAddr("udp", "127.0.0.1:3033")
-	if err != nil {
-		escape.LogPrint("Error resolving address:", err)
-		return err
-	}
-
-	// Dial the server address
-	conn, err := net.DialUDP("udp", nil, serverAddr)
-	buffer := make([]byte, 1024)
-	n, _, err := conn.ReadFromUDP(buffer)
-	if err != nil {
-		escape.LogPrint("Error receiving response:", err)
-	}
-
-	defer conn.Close()
-
-	var response Message
-	err = json.Unmarshal(buffer[:n], &response)
-	if err != nil {
-		escape.LogPrint("Error unmarshaling JSON:", err)
-	}
-
-	escape.LogPrint("Server response:", response)
-
-	return nil
-}*/

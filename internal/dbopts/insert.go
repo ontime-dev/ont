@@ -20,13 +20,9 @@ func Insert(db *sql.DB, user string, job Jobs, new bool) (int, error) {
 		//Enable below when verbose
 		//escape.LogPrint("Inserting in table")
 	}
-	//fmt.Println(id)
-	//status := "Done"
 
 	cmd := fmt.Sprintf("INSERT INTO %s (id, script, exec_time, every, status) VALUES (%d, '%s', '%s', '%s', '%s');", user, id, job.Script, job.Exec_time, job.Every, job.Status)
-	//cmd := fmt.Sprintf("INSERT INTO %s (script, next_run, every, status) VALUES ( '%s', '%s', '%s', '%s')", user, job.Script, job.Next_run, job.Every, status)
 
-	//fmt.Println(cmd)
 	_, err = db.Exec(cmd)
 	if err != nil {
 		return 0, err
@@ -37,11 +33,7 @@ func Insert(db *sql.DB, user string, job Jobs, new bool) (int, error) {
 }
 
 func setID(db *sql.DB, table string) int {
-	/*
-		cmd := fmt.Sprintf("SELECT MAX(id) AS max_id FROM %s", table)
-		var maxID int
-		err := db.QueryRow(cmd).Scan(&maxID)
-	*/
+
 	maxID, err := GetMaxID(db, table)
 	if err != nil {
 		if maxID == 0 {
