@@ -16,6 +16,7 @@ import (
 )
 
 var from string
+var refresh bool
 
 // startCmd represents the start command
 var startCmd = &cobra.Command{
@@ -33,7 +34,7 @@ var startCmd = &cobra.Command{
 			return err
 		}
 
-		err = startJob(jobid, false)
+		err = startJob(jobid)
 		if err != nil {
 			return err
 		}
@@ -43,14 +44,8 @@ var startCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(startCmd)
-	startCmd.SetUsageTemplate(`Usage:
-  ont start [flags] <jobID>
-
-Flags:
-  -f, --from string   Start the job from a specific time and date. (default "now")
-  -h, --help          help for start
-`)
 	startCmd.Flags().StringVarP(&from, "from", "f", "now", "Start the job from a specific time and date.")
+	startCmd.Flags().BoolVarP(&refresh, "refresh", "r", false, "Refresh the job from a specific time and date. Useful when ontd service was stopped and the next exec time of a job is overdue")
 
 	// Here you will define your flags and configuration settings.
 
@@ -63,7 +58,7 @@ Flags:
 	// startCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func startJob(jobid int, refresh bool) error {
+func startJob(jobid int) error {
 	command := "start"
 	user, err := user.Current()
 	if err != nil {
