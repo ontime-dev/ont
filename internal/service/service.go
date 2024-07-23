@@ -11,7 +11,7 @@ import (
 )
 
 func Letsgo() error {
-	password, port := config.GetConfig("DBPASS"), config.GetConfig("SERVER_PORT")
+	password, ip, port := config.GetConfig("DBPASS"), config.GetConfig("SERVER_IP"), config.GetConfig("SERVER_PORT")
 	pass_cmd := fmt.Sprintf("ont:%s@/ontime", password)
 
 	db, err := sql.Open("mysql", pass_cmd)
@@ -19,7 +19,7 @@ func Letsgo() error {
 		escape.LogFatal(err)
 	}
 
-	go Server(db, port)
+	go Server(db, ip, port)
 	defer db.Close()
 
 	for {

@@ -21,10 +21,10 @@ type Message struct {
 	Status  string        `json:"status"`
 }
 
-func Server(db *sql.DB, port string) {
+func Server(db *sql.DB, ip, port string) {
 
-	portNum := fmt.Sprintf(":%s", port)
-	listener, err := net.Listen("tcp", portNum)
+	serverAddr := fmt.Sprintf("%s:%s", ip, port)
+	listener, err := net.Listen("tcp", serverAddr)
 	if err != nil {
 		escape.LogFatal(err.Error())
 	}

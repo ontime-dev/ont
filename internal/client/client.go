@@ -21,8 +21,9 @@ type Message struct {
 func SendMsg(message Message) (Message, error) {
 
 	// Dial the server address
+	ip := config.GetConfig("SERVER_IP")
 	port := config.GetConfig("SERVER_PORT")
-	serverAddr := fmt.Sprintf("%s:%s", "localhost", port)
+	serverAddr := fmt.Sprintf("%s:%s", ip, port)
 
 	conn, err := net.Dial("tcp", serverAddr)
 	if err != nil {
