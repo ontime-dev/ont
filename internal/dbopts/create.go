@@ -2,7 +2,7 @@ package dbopts
 
 import (
 	"database/sql"
-	"fmt"
+	"ont/internal/escape"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -22,7 +22,7 @@ func Create(db *sql.DB, user string) error {
 
 	_, err := db.Exec(cmd)
 	if err != nil {
-		fmt.Println(err.Error())
+		escape.LogPrint(err.Error())
 		return err
 	}
 

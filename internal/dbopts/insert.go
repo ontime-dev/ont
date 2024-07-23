@@ -3,6 +3,7 @@ package dbopts
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 )
 
 func Insert(db *sql.DB, user string, job Jobs, new bool) (int, error) {
@@ -47,9 +48,12 @@ func setID(db *sql.DB, table string) int {
 
 func GetMaxID(db *sql.DB, table string) (int, error) {
 	cmd := fmt.Sprintf("SELECT MAX(id) AS max_id FROM %s", table)
-	var maxID int
+	maxID := 0
 	err := db.QueryRow(cmd).Scan(&maxID)
 	if err != nil {
+		if strings.Contains(err.Error(), "converting NULL to int is unsupported") {
+			return 0, nil
+		}
 		return 0, err
 	}
 

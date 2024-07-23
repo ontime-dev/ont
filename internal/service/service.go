@@ -54,6 +54,8 @@ func ProcessTable(db *sql.DB, table string, wg *sync.WaitGroup) {
 
 	maxID, err := dbopts.GetMaxID(db, table)
 	if err != nil {
+		//verbose logging
+		//escape.LogPrint("(PrcsTbl):", err)
 		escape.LogPrint(err)
 	}
 
