@@ -13,12 +13,6 @@ import (
 	"golang.org/x/exp/rand"
 )
 
-// type Message struct {
-// 	Command string        `json:"command"`
-// 	User    string        `json:"user"`
-// 	Job     []dbopts.Jobs `json:"job"`
-// }
-
 type Message struct {
 	Command string        `json:"command"`
 	User    string        `json:"user"`
@@ -64,14 +58,14 @@ func Server(db *sql.DB, port string) {
 		}
 
 		//Verbose logging
-		//escape.LogPrintf("User '%s' requested '%s' job \n", msg.User, msg.Command)
+		escape.LogPrintf("User '%s' requested '%s' job \n", msg.User, msg.Command)
 
 		var response Message
 		fun := []string{"Okay.", "Cool.", "Roger.", "Got it.", "On it.", "Sure.", "All right.", "Certainly.", "Will do.", "Absolutely."}
 
 		switch msg.Command {
 		case "list":
-			err, jobs := dbopts.List(db, msg.User)
+			jobs, err := dbopts.List(db, msg.User)
 			if err != nil {
 				escape.LogPrint(err.Error())
 			}
@@ -81,6 +75,9 @@ func Server(db *sql.DB, port string) {
 				User:    msg.User,
 				Jobs:    jobs,
 			}
+
+			//Verbose logging
+			//escape.LogPrint(jobs)
 
 			sendResponse(response, conn)
 
@@ -99,7 +96,7 @@ func Server(db *sql.DB, port string) {
 			sendResponse(response, conn)
 
 		case "stop":
-			err := dbopts.ChangeJobStatus(db, msg.User, "Inactive", msg.Job)
+			err := dbopts.ChangeJobStatus(db, msg.User, "Inactive", msg.Job, false)
 			if err != nil {
 				if err.Error() == "sql: no rows in result set" {
 					status := fmt.Sprintf("Job %d doesn't exist", msg.Job.Id)
@@ -123,7 +120,7 @@ func Server(db *sql.DB, port string) {
 			sendResponse(response, conn)
 
 		case "start":
-			err := dbopts.ChangeJobStatus(db, msg.User, "Active", msg.Job)
+			err := dbopts.ChangeJobStatus(db, msg.User, "Active", msg.Job, false)
 			if err != nil {
 				if err.Error() == "sql: no rows in result set" {
 					status := fmt.Sprintf("Job %d doesn't exist", msg.Job.Id)
@@ -142,6 +139,36 @@ func Server(db *sql.DB, port string) {
 				status := fmt.Sprintf("%s Job %d is active now.", fun[n], msg.Job.Id)
 				response = Message{
 					Status: status,
+				}
+			}
+			sendResponse(response, conn)
+
+		case "refresh":
+			job, err := dbopts.GetJob(db, msg.User, msg.Job.Id, msg.Job)
+			if err != nil {
+				escape.LogPrint(err.Error())
+			}
+
+			if job.Status == "Inactive" {
+				response = Message{
+					Status: "Can't refresh an inactive job.",
+				}
+			} else {
+				err = dbopts.ChangeJobStatus(db, msg.User, "Active", msg.Job, true)
+				if err != nil {
+					fmt.Println(err.Error())
+					if err.Error() == "sql: no rows in result set" {
+						status := fmt.Sprintf("Job %d doesn't exist", msg.Job.Id)
+						response = Message{
+							Status: status,
+						}
+					}
+				} else {
+					n := rand.Intn(len(fun))
+					status := fmt.Sprintf("%s Job %d is refreshed.", fun[n], msg.Job.Id)
+					response = Message{
+						Status: status,
+					}
 				}
 			}
 			sendResponse(response, conn)

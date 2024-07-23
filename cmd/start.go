@@ -33,7 +33,7 @@ var startCmd = &cobra.Command{
 			return err
 		}
 
-		err = startJob(jobid)
+		err = startJob(jobid, false)
 		if err != nil {
 			return err
 		}
@@ -63,7 +63,8 @@ Flags:
 	// startCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func startJob(jobid int) error {
+func startJob(jobid int, refresh bool) error {
+	command := "start"
 	user, err := user.Current()
 	if err != nil {
 		return err
@@ -80,8 +81,13 @@ func startJob(jobid int) error {
 		Status:    "Active",
 		Exec_time: exec_time,
 	}
+	if refresh {
+		command = "refresh"
+	}
+
+	//fmt.Println(job.Exec_time)
 	message := client.Message{
-		Command: "start",
+		Command: command,
 		User:    user.Username,
 		Job:     job,
 	}

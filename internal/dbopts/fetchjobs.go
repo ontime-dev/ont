@@ -6,12 +6,14 @@ import (
 	"ont/internal/escape"
 )
 
-func List(db *sql.DB, user string) (error, []Jobs) {
+func List(db *sql.DB, user string) ([]Jobs, error) {
 	err, jobs := PrintJobs(db, user)
 	if err != nil {
-		return err, nil
+		return nil, err
 	}
-	return nil, jobs
+	return jobs, nil
+
+	//Can be used for showing one job.
 	/*
 		if job.Id == 0 {
 			err, jobs := PrintJobs(db, user)
@@ -37,10 +39,12 @@ func PrintJobs(db *sql.DB, table string) (error, []Jobs) {
 	if err != nil {
 		return err, jobs
 	}
+	escape.LogPrint(maxID)
 
 	for id := 1; id <= maxID; id++ {
 
 		job, err = GetJob(db, table, id, job)
+		escape.LogPrint(job)
 		if err != nil {
 			if err.Error() != "sql: no rows in result set" {
 				return err, jobs

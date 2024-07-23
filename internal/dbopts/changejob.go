@@ -7,9 +7,9 @@ import (
 	"strings"
 )
 
-func ChangeJobStatus(db *sql.DB, user, Jobstatus string, job Jobs) error {
+func ChangeJobStatus(db *sql.DB, user, Jobstatus string, job Jobs, refresh bool) error {
 
-	job, err := GetJobStatus(db, user, Jobstatus, job)
+	job, err := GetJobStatus(db, user, Jobstatus, job, refresh)
 	if err != nil {
 		return err
 	}
@@ -26,7 +26,7 @@ func ChangeJobStatus(db *sql.DB, user, Jobstatus string, job Jobs) error {
 	return nil
 }
 
-func GetJobStatus(db *sql.DB, table, Jobstatus string, job Jobs) (Jobs, error) {
+func GetJobStatus(db *sql.DB, table, Jobstatus string, job Jobs, refresh bool) (Jobs, error) {
 	/*
 		var status string
 
@@ -43,10 +43,12 @@ func GetJobStatus(db *sql.DB, table, Jobstatus string, job Jobs) (Jobs, error) {
 
 	//The below allows the users to see message "job is already active/inactive"
 
-	if oldjob.Status == Jobstatus {
-		Jobstatus = strings.ToLower(Jobstatus[:1]) + Jobstatus[1:]
-		err := fmt.Sprintf("Job %d is already %s.", job.Id, Jobstatus)
-		return job, errors.New(err)
+	if !refresh {
+		if oldjob.Status == Jobstatus {
+			Jobstatus = strings.ToLower(Jobstatus[:1]) + Jobstatus[1:]
+			err := fmt.Sprintf("Job %d is already %s.", job.Id, Jobstatus)
+			return job, errors.New(err)
+		}
 	}
 
 	oldjob.Status = job.Status
