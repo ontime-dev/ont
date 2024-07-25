@@ -125,12 +125,12 @@ func setNextRun(last_char, from string, number int) (string, error) {
 
 }
 
-func GetLastChar(every string) (number int, last_char string) {
+func GetLastChar(every string) (int, string) {
 	number, err := strconv.Atoi(every[:len(every)-1])
 	if err != nil {
 		return 0, ""
 	}
-	last_char = every[len(every)-1:]
+	last_char := every[len(every)-1:]
 
 	return number, last_char
 }
