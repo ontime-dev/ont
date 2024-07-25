@@ -60,7 +60,7 @@ func ProcessTable(db *sql.DB, table string, wg *sync.WaitGroup) {
 	}
 
 	for id := 1; id <= maxID; id++ {
-		job, err := dbopts.GetJob(db, table, id, job)
+		job, err := job.GetJob(db, table, id)
 		if err != nil {
 			if err.Error() != "sql: no rows in result set" {
 				escape.LogPrint(err)

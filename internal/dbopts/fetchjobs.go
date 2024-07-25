@@ -43,7 +43,7 @@ func PrintJobs(db *sql.DB, table string) ([]Jobs, error) {
 
 	for id := 1; id <= maxID; id++ {
 
-		job, err = GetJob(db, table, id, job)
+		job, err = job.GetJob(db, table, id)
 		escape.LogPrint(job)
 		if err != nil {
 			if err.Error() != "sql: no rows in result set" {
@@ -77,16 +77,4 @@ func PrintOneJob(db *sql.DB, table string, jobid int) ([]Jobs, error) {
 	jobs = append(jobs, job)
 	return jobs, nil
 
-}
-
-func GetJob(db *sql.DB, table string, id int, job Jobs) (Jobs, error) {
-	job.Id = id
-	cmd := fmt.Sprintf("SELECT script,exec_time,every,status,runon FROM %s WHERE id = %d ORDER BY timestamp DESC LIMIT 1;", table, job.Id)
-
-	err := db.QueryRow(cmd).Scan(&job.Script, &job.Exec_time, &job.Every, &job.Status, &job.RunOn)
-	if err != nil {
-		return job, err
-	}
-
-	return job, nil
 }

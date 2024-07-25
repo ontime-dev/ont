@@ -5,6 +5,11 @@ import (
 	"fmt"
 )
 
+// import (
+// 	"database/sql"
+// 	"fmt"
+// )
+
 func CleanAllJobs(db *sql.DB, table string) error {
 	cmd := fmt.Sprintf("Drop table %s;", table)
 

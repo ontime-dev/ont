@@ -63,7 +63,7 @@ func ChangeExecTime(db *sql.DB, table string, job dbopts.Jobs) error {
 
 	//Enable below when verbose
 	//escape.LogPrint("Changing time to: ", job.Exec_time)
-	_, err = dbopts.Insert(db, table, job, false)
+	_, err = job.Insert(db, table, false)
 
 	if err != nil {
 		return err
@@ -111,11 +111,11 @@ func remoteRun(user, server, cmd, prvt_key string) error {
 
 	user_ssh_dir := fmt.Sprintf("/home/%s/.ssh", user)
 
-	allowed_hosts_file := fmt.Sprintf("%s/known_hosts", user_ssh_dir)
-	publicKeyBytes, _ := os.ReadFile(allowed_hosts_file)
-	_, hosts, pubkey, _, _, _ := ssh.ParseKnownHosts(publicKeyBytes)
-	escape.LogPrint(pubkey)
-	escape.LogPrint(hosts)
+	// allowed_hosts_file := fmt.Sprintf("%s/known_hosts", user_ssh_dir)
+	// publicKeyBytes, _ := os.ReadFile(allowed_hosts_file)
+	// _, hosts, pubkey, _, _, _ := ssh.ParseKnownHosts(publicKeyBytes)
+	// escape.LogPrint(pubkey)
+	// escape.LogPrint(hosts)
 
 	if prvt_key == "" {
 		prvt_key = fmt.Sprintf("%s/id_rsa", user_ssh_dir)

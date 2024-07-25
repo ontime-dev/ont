@@ -74,7 +74,7 @@ func Server(db *sql.DB, ip, port string) {
 			sendResponse(response, conn)
 
 		case "run":
-			jobID, err := dbopts.Insert(db, msg.User, msg.Job, true)
+			jobID, err := msg.Job.Insert(db, msg.User, true)
 			if err != nil {
 				escape.LogPrint(err.Error())
 			}
@@ -88,7 +88,7 @@ func Server(db *sql.DB, ip, port string) {
 			sendResponse(response, conn)
 
 		case "stop":
-			err := dbopts.ChangeJobStatus(db, msg.User, "Inactive", msg.Job, false)
+			err := msg.Job.ChangeJobStatus(db, msg.User, "Inactive", false)
 			if err != nil {
 				if err.Error() == "sql: no rows in result set" {
 					status := fmt.Sprintf("Job %d doesn't exist", msg.Job.Id)
@@ -112,7 +112,7 @@ func Server(db *sql.DB, ip, port string) {
 			sendResponse(response, conn)
 
 		case "start":
-			err := dbopts.ChangeJobStatus(db, msg.User, "Active", msg.Job, false)
+			err := msg.Job.ChangeJobStatus(db, msg.User, "Active", false)
 			if err != nil {
 				if err.Error() == "sql: no rows in result set" {
 					status := fmt.Sprintf("Job %d doesn't exist", msg.Job.Id)
@@ -136,7 +136,7 @@ func Server(db *sql.DB, ip, port string) {
 			sendResponse(response, conn)
 
 		case "refresh":
-			job, err := dbopts.GetJob(db, msg.User, msg.Job.Id, msg.Job)
+			job, err := msg.Job.GetJob(db, msg.User, msg.Job.Id)
 			if err != nil {
 				escape.LogPrint(err.Error())
 			}
@@ -146,7 +146,7 @@ func Server(db *sql.DB, ip, port string) {
 					Status: "Can't refresh an inactive job.",
 				}
 			} else {
-				err = dbopts.ChangeJobStatus(db, msg.User, "Active", msg.Job, true)
+				err = msg.Job.ChangeJobStatus(db, msg.User, "Active", true)
 				if err != nil {
 					fmt.Println(err.Error())
 					if err.Error() == "sql: no rows in result set" {
@@ -166,8 +166,8 @@ func Server(db *sql.DB, ip, port string) {
 			sendResponse(response, conn)
 
 		case "remove":
-
-			if err := dbopts.RemoveJob(db, msg.User, msg.Job); err != nil {
+			//if err := dbopts.RemoveJob(db, msg.User, msg.Job); err != nil {
+			if err := msg.Job.RemoveJob(db, msg.User); err != nil {
 				escape.LogPrint(err.Error())
 				status := fmt.Sprintf("Job %d doesn't exist.", msg.Job.Id)
 				response = Message{
