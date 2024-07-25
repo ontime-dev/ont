@@ -21,16 +21,19 @@ type Jobs struct {
 
 func (job Jobs) Insert(db *sql.DB, user string, new bool) (int, error) {
 
-	var id int
 	err := Create(db, user)
 	if err != nil {
 		return 0, err
 	}
 
+	var id int
+	var logMessage string
 	if new {
 		id = setID(db, user)
+		logMessage = fmt.Sprintf("New entry inserted for job %d", id)
 	} else {
 		id = job.Id
+		logMessage = fmt.Sprintf("Job %d updated", id)
 		//Enable below when verbose
 		//escape.LogPrint("Inserting in table")
 	}
@@ -41,7 +44,7 @@ func (job Jobs) Insert(db *sql.DB, user string, new bool) (int, error) {
 		return 0, err
 	}
 
-	escape.LogPrintf("New entry inserted for job %d", id)
+	escape.LogPrintf(logMessage)
 
 	return id, err
 
@@ -87,8 +90,7 @@ func (job Jobs) ChangeJobStatus(db *sql.DB, user, Jobstatus string, refresh bool
 		return err
 	}
 
-	cmd := fmt.Sprintf("INSERT INTO %s (id, script, exec_time, every, status) VALUES (%d, '%s', '%s', '%s', '%s');", user, job.Id, job.Script, job.Exec_time, job.Every, job.Status)
-	_, err = db.Exec(cmd)
+	_, err = job.Insert(db, user, false)
 
 	if err != nil {
 		return err
