@@ -27,8 +27,9 @@ var flags struct {
 	month string
 	year  string
 	yes   bool
-	nodes string
 }
+
+var nodes, _ = os.Hostname()
 
 // runCmd represents the run command
 var runCmd = &cobra.Command{
@@ -65,7 +66,7 @@ func init() {
 	runCmd.Flags().StringVarP(&flags.day, "day", "d", "", "Specify the days.")
 	runCmd.Flags().StringVarP(&flags.month, "month", "M", "", "Specify the month.")
 	runCmd.Flags().StringVarP(&flags.year, "year", "Y", "", "Specify the year.")
-	runCmd.Flags().StringVarP(&flags.nodes, "nodes", "n", os.Getenv("HOSTNAME"), "Specify the node list to run the job on")
+	runCmd.Flags().StringVarP(&nodes, "nodes", "n", nodes, "Specify the node list to run the job on")
 
 	runCmd.Flags().BoolVarP(&flags.yes, "yes", "y", false, "Continue without asking for confirmation")
 
@@ -91,6 +92,7 @@ func init() {
 }
 
 func runJob(cmd *cobra.Command, script []string) error {
+	fmt.Println(nodes)
 	defer func() error {
 		if r := recover(); r != nil {
 			cmd.Usage()
@@ -140,7 +142,7 @@ func runJob(cmd *cobra.Command, script []string) error {
 		Exec_time: exec_time,
 		Every:     flags.every,
 		Status:    "Active",
-		RunOn:     flags.nodes,
+		RunOn:     nodes,
 	}
 
 	message := client.Message{

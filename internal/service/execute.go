@@ -28,7 +28,7 @@ func Execute(db *sql.DB, table string, job dbopts.Jobs) {
 	cmd.SysProcAttr.Credential = &syscall.Credential{Uid: uid}
 	cmd.Dir = homeDir
 	go func() {
-		if job.RunOn == "local" {
+		if job.RunOn == os.Getenv("HOSTNAME") {
 			escape.LogPrint(job.RunOn)
 			err := cmd.Run()
 			if err != nil {
