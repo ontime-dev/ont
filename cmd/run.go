@@ -17,7 +17,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// var evFrm, timedate bool
 var flags struct {
 	every string
 	from  string

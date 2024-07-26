@@ -43,7 +43,6 @@ func Letsgo() error {
 			go ProcessTable(db, table, &wg)
 		}
 		wg.Wait()
-
 	}
 }
 
@@ -54,6 +53,10 @@ func ProcessTable(db *sql.DB, table string, wg *sync.WaitGroup) {
 
 	maxID, err := dbopts.GetMaxID(db, table)
 	if err != nil {
+		if err.Error() == fmt.Sprintf("Table 'ontime.%s' doesn't exist", table) {
+			return
+
+		}
 		//verbose logging
 		//escape.LogPrint("(PrcsTbl):", err)
 		escape.LogPrint(err)
@@ -78,4 +81,5 @@ func ProcessTable(db *sql.DB, table string, wg *sync.WaitGroup) {
 		}
 
 	}
+
 }

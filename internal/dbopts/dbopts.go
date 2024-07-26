@@ -33,7 +33,7 @@ func (job Jobs) Insert(db *sql.DB, user string, new bool) (int, error) {
 		logMessage = fmt.Sprintf("New entry inserted for job %d", id)
 	} else {
 		id = job.Id
-		logMessage = fmt.Sprintf("Job %d updated", id)
+		logMessage = fmt.Sprintf("Job %d updated for user %s", id, user)
 		//Enable below when verbose
 		//escape.LogPrint("Inserting in table")
 	}

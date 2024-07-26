@@ -166,7 +166,6 @@ func Server(db *sql.DB, ip, port string) {
 			sendResponse(response, conn)
 
 		case "remove":
-			//if err := dbopts.RemoveJob(db, msg.User, msg.Job); err != nil {
 			if err := msg.Job.RemoveJob(db, msg.User); err != nil {
 				escape.LogPrint(err.Error())
 				status := fmt.Sprintf("Job %d doesn't exist.", msg.Job.Id)
