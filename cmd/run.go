@@ -43,7 +43,7 @@ var runCmd = &cobra.Command{
   ont run --every 1d --from dd-MM-yyyy /path/to/script.sh
   ont run --every 1d --from dd-MM-yyyyThh:mm:ss /path/to/script.sh`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		err := runJob(args)
+		err := runJob(cmd, args)
 
 		//fmt.Println(cmd.Flags().Lookup("every").Value.String())
 		return err
@@ -66,7 +66,7 @@ func init() {
 	runCmd.Flags().StringVarP(&flags.day, "day", "d", "", "Specify the days.")
 	runCmd.Flags().StringVarP(&flags.month, "month", "M", "", "Specify the month.")
 	runCmd.Flags().StringVarP(&flags.year, "year", "Y", "", "Specify the year.")
-	runCmd.Flags().StringVarP(&flags.nodes, "nodes", "n", "local", "Specify the node list to run the job on")
+	runCmd.Flags().StringVarP(&flags.nodes, "nodes", "n", os.Getenv("HOSTNAME"), "Specify the node list to run the job on")
 
 	runCmd.Flags().BoolVarP(&flags.yes, "yes", "y", false, "Continue without asking for confirmation")
 
@@ -91,10 +91,10 @@ func init() {
 	// runCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func runJob(script []string) error {
+func runJob(cmd *cobra.Command, script []string) error {
 	defer func() error {
 		if r := recover(); r != nil {
-			fmt.Println("Invalid input")
+			cmd.Usage()
 			os.Exit(1)
 		}
 

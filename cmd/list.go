@@ -79,8 +79,5 @@ func listJobs(jobid int) error {
 		fmt.Printf("%d \t| %s\t| %s       | %s \t| %s \t| %s\n", job.Id, job.Status, job.Every, job.RunOn, job.Exec_time, job.Script)
 	}
 
-	if err != nil {
-		return err
-	}
 	return nil
 }
