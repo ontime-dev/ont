@@ -105,6 +105,11 @@ func runJob(cmd *cobra.Command, script []string) error {
 
 	}
 
+	valid := run.CheckFromValidity(flags.from)
+	if !valid {
+		return errors.New("'from' time can't be in the past")
+	}
+
 	exec_time, err := run.ParseEvryFrom(flags.every, flags.from)
 	if err != nil {
 		return err
@@ -121,11 +126,6 @@ func runJob(cmd *cobra.Command, script []string) error {
 
 	//Check if script exists.
 	_, err = os.Stat(script_path)
-	if err != nil {
-		return err
-	}
-
-	//wd, err := os.Getwd()
 	if err != nil {
 		return err
 	}
@@ -178,10 +178,10 @@ Next Execution time: %s
 Interval: %s
 `, message.Job.Script, message.Job.Exec_time, message.Job.Exec_time)
 	} else if message.Command == "clean" {
-		stdout_msg = "You are about to remove all jobs and entries."
+		stdout_msg = "You are about to remove all jobs and entries.\n"
 	}
 
-	fmt.Println(stdout_msg)
+	fmt.Print(stdout_msg)
 
 	for {
 		fmt.Printf("Continue?(n/Y):")
@@ -199,27 +199,3 @@ Interval: %s
 		}
 	}
 }
-
-// func confirm(job dbopts.Jobs) error {
-
-// 	fmt.Printf(
-// 		`Script: %s
-// Next Execution time: %s
-// Interval: %s
-// `, job.Script, job.Exec_time, job.Every)
-// 	for {
-// 		fmt.Printf("Continue?(n/Y):")
-// 		scanner := bufio.NewScanner(os.Stdin)
-// 		scanner.Scan()
-// 		input := scanner.Text()
-
-// 		switch input {
-// 		case "n", "N":
-// 			os.Exit(0)
-// 		case "y", "Y", "":
-// 			return nil
-// 		default:
-// 			fmt.Println("Invalid Choice!")
-// 		}
-// 	}
-// }

@@ -2,7 +2,6 @@ package run
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -36,7 +35,7 @@ func ParseFrom(from string) (time.Time, error) {
 		crntTime = crntTime.AddDate(0, 0, 1)
 		return crntTime, nil
 	default:
-		var err error
+
 		if strings.Contains(from, "T") {
 			dateTime := strings.Split(from, "T")
 			from = dateTime[0] + " " + dateTime[1]
@@ -48,7 +47,7 @@ func ParseFrom(from string) (time.Time, error) {
 			from_string := strings.Split(from, "+")
 
 			num, last_char := GetLastChar(from_string[1])
-			from, err = ParseEvery(crntTime, last_char, num)
+			from, err := ParseEvery(crntTime, last_char, num)
 			if err != nil {
 				return crntTime, err
 			}
@@ -58,7 +57,7 @@ func ParseFrom(from string) (time.Time, error) {
 			}
 			return crntTime, nil
 		}
-		crntTime, err = time.Parse("02-01-2006 15:04:05", from)
+		crntTime, err := time.Parse("02-01-2006 15:04:05", from)
 		if err != nil {
 			return crntTime, err
 		}
@@ -90,7 +89,6 @@ func ParseEvery(crntTime time.Time, last_char string, number int) (string, error
 		return next_run, nil
 	case "y":
 		next_run := crntTime.AddDate(number, 0, 0).Format("15:04:05 Jan 02 2006")
-		fmt.Println("every year")
 		return next_run, nil
 	default:
 		return "", errors.New("please specify a valid option with --every flag")
@@ -133,4 +131,15 @@ func GetLastChar(every string) (int, string) {
 	last_char := every[len(every)-1:]
 
 	return number, last_char
+}
+
+func CheckFromValidity(from string) bool {
+
+	if from != "now" && from != "tomorrow" {
+		fromTime, _ := ParseFrom(from)
+		if fromTime.Before(time.Now()) {
+			return false
+		}
+	}
+	return true
 }

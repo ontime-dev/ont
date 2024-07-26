@@ -39,12 +39,10 @@ func PrintJobs(db *sql.DB, table string) ([]Jobs, error) {
 	if err != nil {
 		return jobs, err
 	}
-	escape.LogPrint(maxID)
 
 	for id := 1; id <= maxID; id++ {
 
 		job, err = job.GetJob(db, table, id)
-		escape.LogPrint(job)
 		if err != nil {
 			if err.Error() != "sql: no rows in result set" {
 				return jobs, err
