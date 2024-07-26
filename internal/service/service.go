@@ -68,13 +68,13 @@ func ProcessTable(db *sql.DB, table string, wg *sync.WaitGroup) {
 
 		}
 		if job.Exec_time == time.Now().Format("15:04:05 Jan 02 2006") {
-
+			Execute(db, table, job)
 			//CHECK IF STATUS IS ACTIVE
-			if job.Status == "Active" {
-				Execute(db, table, job)
-			} else {
-				escape.LogPrint("Job IS NOT ACTIVE")
-			}
+			// if job.Status == "Active" {
+			// 	Execute(db, table, job)
+			// } else {
+			// 	escape.LogPrint("Job IS NOT ACTIVE")
+			// }
 		}
 
 	}
