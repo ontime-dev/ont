@@ -75,8 +75,5 @@ func removeJob(jobid int) error {
 
 	fmt.Println(response.Status)
 
-	if err != nil {
-		return err
-	}
 	return nil
 }

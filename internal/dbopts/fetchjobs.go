@@ -35,21 +35,24 @@ func List(db *sql.DB, user string) ([]Jobs, error) {
 func PrintJobs(db *sql.DB, table string) ([]Jobs, error) {
 	var jobs []Jobs
 	maxID, err := GetMaxID(db, table)
-	var job Jobs
+
 	if err != nil {
 		return jobs, err
 	}
 
 	for id := 1; id <= maxID; id++ {
-
+		var job Jobs
 		job, err = job.GetJob(db, table, id)
 		if err != nil {
 			if err.Error() != "sql: no rows in result set" {
 				return jobs, err
 			}
 		}
-		jobs = append(jobs, job)
-
+		if job.Status == "Active" || job.Status == "Inactive" {
+			fmt.Println(job)
+			fmt.Println(job.Id, job.Status)
+			jobs = append(jobs, job)
+		}
 	}
 
 	return jobs, nil
