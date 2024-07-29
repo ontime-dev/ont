@@ -49,8 +49,6 @@ func PrintJobs(db *sql.DB, table string) ([]Jobs, error) {
 			}
 		}
 		if job.Status == "Active" || job.Status == "Inactive" {
-			fmt.Println(job)
-			fmt.Println(job.Id, job.Status)
 			jobs = append(jobs, job)
 		}
 	}

@@ -2,10 +2,9 @@ package service
 
 import (
 	"database/sql"
-	"fmt"
-	"net"
 	"ont/internal/dbopts"
 	"ont/internal/escape"
+	"ont/internal/remote"
 	"ont/internal/run"
 	"os"
 	"os/exec"
@@ -13,9 +12,6 @@ import (
 	"strconv"
 	"syscall"
 	"time"
-
-	"golang.org/x/crypto/ssh"
-	"golang.org/x/crypto/ssh/knownhosts"
 )
 
 func Execute(db *sql.DB, table string, job dbopts.Jobs) {
@@ -37,7 +33,7 @@ func Execute(db *sql.DB, table string, job dbopts.Jobs) {
 			}
 		} else {
 			escape.LogPrint(job.RunOn)
-			err := remoteRun(table, job.RunOn, job.Script, "")
+			err := remote.Run(table, job.RunOn, job.Script, "")
 			if err != nil {
 				escape.LogPrint(err.Error())
 			}
@@ -82,88 +78,4 @@ func getUserInfo(table string) (uint32, string) {
 		escape.LogPrint(err)
 	}
 	return uint32(userUID), user.HomeDir
-}
-
-func createKnownHosts(user string) string {
-	knownHostsFilepath := fmt.Sprintf("/home/%s/.ssh/known_hosts", user)
-	file, err := os.OpenFile(knownHostsFilepath, os.O_CREATE, 0600)
-	if err != nil {
-		escape.LogPrint(err.Error())
-	}
-	file.Close()
-
-	return knownHostsFilepath
-}
-
-func checkKnownHosts(user string) ssh.HostKeyCallback {
-	knownHostsFile := createKnownHosts(user)
-	knownHosts, err := knownhosts.New(knownHostsFile)
-
-	if err != nil {
-		escape.LogPrint(err.Error())
-		return nil
-	}
-	return knownHosts
-}
-
-func remoteRun(user, server, cmd, prvt_key string) error {
-	cmd = fmt.Sprintf("bash %s", cmd)
-
-	user_ssh_dir := fmt.Sprintf("/home/%s/.ssh", user)
-
-	// allowed_hosts_file := fmt.Sprintf("%s/known_hosts", user_ssh_dir)
-	// publicKeyBytes, _ := os.ReadFile(allowed_hosts_file)
-	// _, hosts, pubkey, _, _, _ := ssh.ParseKnownHosts(publicKeyBytes)
-	// escape.LogPrint(pubkey)
-	// escape.LogPrint(hosts)
-
-	if prvt_key == "" {
-		prvt_key = fmt.Sprintf("%s/id_rsa", user_ssh_dir)
-	}
-	privateKey, err := os.ReadFile(prvt_key)
-
-	if err != nil {
-		return err
-	}
-	key, err := ssh.ParsePrivateKey(privateKey)
-
-	if err != nil {
-		return err
-	}
-
-	config := &ssh.ClientConfig{
-		User: user,
-		HostKeyCallback: ssh.HostKeyCallback(func(host string, remote net.Addr, pubKey ssh.PublicKey) error {
-			kh := checkKnownHosts(user)
-			err := kh(host, remote, pubKey)
-			if err != nil {
-				return err
-			}
-			return nil
-		}),
-		Auth: []ssh.AuthMethod{
-			ssh.PublicKeys(key),
-		},
-	}
-
-	client, err := ssh.Dial("tcp", net.JoinHostPort(server, "22"), config)
-
-	if err != nil {
-		return err
-	}
-
-	session, err := client.NewSession()
-
-	if err != nil {
-		return err
-	}
-
-	defer session.Close()
-
-	err = session.Run(cmd)
-	if err != nil {
-		return err
-	}
-	return err
-
 }
