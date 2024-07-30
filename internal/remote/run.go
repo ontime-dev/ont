@@ -1,99 +1,63 @@
 package remote
 
 import (
+	"errors"
 	"fmt"
 	"net"
 	"os"
+	"strings"
 
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/knownhosts"
 )
 
-// func addHostKey(host, user string, remote net.Addr, pubKey ssh.PublicKey) error {
-// 	// add host key if host is not found in known_hosts, error object is return, if nil then connection proceeds,
-// 	// if not nil then connection stops.
-// 	//khFilePath := filepath.Join(os.Getenv("HOME"), ".ssh", "known_hosts")
-// 	knownHostsFilepath := fmt.Sprintf("/home/%s/.ssh/known_hosts", user)
-
-// 	file, err := os.OpenFile(knownHostsFilepath, os.O_APPEND|os.O_WRONLY, 0600)
-// 	if err != nil {
-// 		escape.LogPrint(err.Error())
-// 	}
-// 	defer file.Close()
-
-// 	knownHosts := knownhosts.Normalize(remote.String())
-// 	_, err = file.WriteString(knownhosts.Line([]string{knownHosts}, pubKey))
-// 	return err
-// }
-
-// func createKnownHosts(user string) string {
-// 	knownHostsFilepath := fmt.Sprintf("/home/%s/.ssh/known_hosts", user)
-// 	file, err := os.OpenFile(knownHostsFilepath, os.O_CREATE, 0600)
-// 	if err != nil {
-// 		escape.LogPrint(err.Error())
-// 	}
-// 	file.Close()
-
-// 	return knownHostsFilepath
-// }
-
-// func checkKnownHosts(user string) ssh.HostKeyCallback {
-// 	knownHostsFile := createKnownHosts(user)
-// 	knownHosts, err := knownhosts.New(knownHostsFile)
-
-// 	if err != nil {
-// 		escape.LogPrint(err.Error())
-// 		return nil
-// 	}
-// 	return knownHosts
-// }
-
-func Run(user, server, cmd, prvt_key string) error {
+func Run(user, server, cmd, prvtKeyFile, pubKeyFile string) error {
 	cmd = fmt.Sprintf("bash %s", cmd)
 
-	user_ssh_dir := fmt.Sprintf("/home/%s/.ssh", user)
+	userSSHDir := fmt.Sprintf("/home/%s/.ssh", user)
 
-	if prvt_key == "" {
-		prvt_key = fmt.Sprintf("%s/id_rsa", user_ssh_dir)
-	}
-
-	privateKey, err := os.ReadFile(prvt_key)
+	prvtKey, err := getPrivateKey(userSSHDir, prvtKeyFile)
 	if err != nil {
 		return err
 	}
 
-	key, err := ssh.ParsePrivateKey(privateKey)
-
-	if err != nil {
-		return err
-	}
-	knownhostsFile := fmt.Sprintf("%s/known_hosts", user_ssh_dir)
-	hstcallback, err := knownhosts.New(knownhostsFile)
-
+	hostcallback, err := newHostKeyCallBackFunc(userSSHDir)
 	if err != nil {
 		return err
 	}
 
 	config := &ssh.ClientConfig{
 		User:            user,
-		HostKeyCallback: hstcallback,
+		HostKeyCallback: hostcallback,
 		Auth: []ssh.AuthMethod{
-			ssh.PublicKeys(key),
+			ssh.PublicKeys(prvtKey),
 		},
 	}
-	var client *ssh.Client
 
-	serverIP, err := net.LookupIP(server)
+	serverIP, serverHost, err := getServerIPHOST(server)
 	if err != nil {
 		return err
 	}
 
-	for _, ip := range serverIP {
-		client, err = ssh.Dial("tcp", net.JoinHostPort(ip.String(), "22"), config)
-		if err == nil {
-			break
+	//verbose
+	//escape.LogPrint("Trying with server IP")
+	client, err := ssh.Dial("tcp", net.JoinHostPort(serverIP[0].String(), "22"), config)
+	if err != nil {
+		//verbose
+		// escape.LogPrint("Trying with server hostname")
+		client, err = ssh.Dial("tcp", net.JoinHostPort(serverHost[0], "22"), config)
+		if err != nil {
+			if strings.Contains(err.Error(), "knownhosts: key is unknown") {
+				return errors.New("error: ssh handshake failed. Make sure the remote server is already to the Known_hosts file on the ontd server")
+			} else if strings.Contains(err.Error(), "ssh: unable to authenticate") {
+				return errors.New("error: ssh handshake failed. Make sure that the PubKey authentication is enabled for the user")
+			} else {
+				return err
+			}
 		}
 	}
+	//verbose
+	// escape.LogPrint("Connection Succeeded. Proceeding.")
 
 	session, err := client.NewSession()
 
@@ -101,14 +65,68 @@ func Run(user, server, cmd, prvt_key string) error {
 		return err
 	}
 
-	defer session.Close()
-
 	err = session.Run(cmd)
 
-	if err != nil {
+	session.Close()
 
-		return err
-	}
 	return err
+}
 
+func getServerIPHOST(server string) ([]net.IP, []string, error) {
+
+	var serverHost []string
+	var serverIP []net.IP
+	var err error
+
+	ip := net.ParseIP(server)
+	//If ip == nil, it is a hostname, if not nil, it is an ip.
+	if ip != nil {
+		//verbose
+		//escape.LogPrint(Reverse resolving the IP)
+		serverHost, err = net.LookupAddr(server)
+		serverIP = []net.IP{ip}
+		if err != nil {
+			return nil, nil, err
+		}
+	} else {
+		//verbose
+		//escape.LogPrint(Resolving the server")
+		serverIP, err = net.LookupIP(server)
+		serverHost = []string{server}
+		if err != nil {
+			return nil, nil, err
+		}
+	}
+	return serverIP, serverHost, err
+}
+
+func getPrivateKey(userSShDir, prvtKeyFile string) (ssh.Signer, error) {
+
+	if prvtKeyFile == "" {
+		prvtKeyFile = fmt.Sprintf("%s/id_rsa", userSShDir)
+	}
+
+	privateKey, err := os.ReadFile(prvtKeyFile)
+	if err != nil {
+		return nil, fmt.Errorf("%s. RSA only is allowed at the moment", err.Error())
+	}
+
+	key, err := ssh.ParsePrivateKey(privateKey)
+	if err != nil {
+		return nil, err
+	}
+
+	return key, err
+}
+
+func newHostKeyCallBackFunc(userSShDir string) (ssh.HostKeyCallback, error) {
+
+	knownhostsFile := fmt.Sprintf("%s/known_hosts", userSShDir)
+
+	hostcallback, err := knownhosts.New(knownhostsFile)
+	if err != nil {
+		return nil, fmt.Errorf("error: %s", err.Error())
+	}
+
+	return hostcallback, err
 }

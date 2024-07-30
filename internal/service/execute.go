@@ -25,15 +25,13 @@ func Execute(db *sql.DB, table string, job dbopts.Jobs) {
 	cmd.Dir = homeDir
 	go func() {
 		if job.RunOn == os.Getenv("HOSTNAME") {
-			escape.LogPrint(job.RunOn)
 			err := cmd.Run()
 			if err != nil {
 
 				escape.LogPrint(err.Error())
 			}
 		} else {
-			escape.LogPrint(job.RunOn)
-			err := remote.Run(table, job.RunOn, job.Script, "")
+			err := remote.Run(table, job.RunOn, job.Script, "", "")
 			if err != nil {
 				escape.LogPrint(err.Error())
 			}

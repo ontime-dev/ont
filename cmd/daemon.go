@@ -38,7 +38,7 @@ func init() {
 func work() {
 	escape.Init()
 	escape.LogPrint(viper.ConfigFileUsed())
-	escape.LogPrint(viper.GetString("server.hostname"))
+	//escape.LogPrint(viper.GetString("server.hostname"))
 
 	err := service.Letsgo()
 	if err != nil {

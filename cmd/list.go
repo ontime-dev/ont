@@ -72,7 +72,7 @@ func listJobs(jobid int) error {
 		return err
 	}
 
-	fmt.Printf("ID \t| Status\t| Every    | Run on \t| Next Execution Time \t| Script \n")
+	fmt.Printf("ID \t| Status\t| Every    | Run on \t\t| Next Execution Time \t| Script \n")
 	fmt.Println("------------------------------------------------------------------------------------------------")
 
 	for _, job := range response.Jobs {

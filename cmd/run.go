@@ -92,7 +92,7 @@ func init() {
 }
 
 func runJob(cmd *cobra.Command, script []string) error {
-	fmt.Println(nodes)
+
 	defer func() error {
 		if r := recover(); r != nil {
 			cmd.Usage()
