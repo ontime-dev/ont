@@ -68,6 +68,7 @@ func Run(user, server, cmd, prvtKeyFile, pubKeyFile string) error {
 	err = session.Run(cmd)
 
 	session.Close()
+	client.Close()
 
 	return err
 }
