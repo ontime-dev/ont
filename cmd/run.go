@@ -42,7 +42,8 @@ var runCmd = &cobra.Command{
   ont run --every 1d --from tomorrow /path/to/script.sh
   ont run --hour 01 /path/to/script.sh
   ont run --every 1d --from dd-MM-yyyy /path/to/script.sh
-  ont run --every 1d --from dd-MM-yyyyThh:mm:ss /path/to/script.sh`,
+  ont run --every 1d --from dd-MM-yyyyThh:mm:ss /path/to/script.sh
+  ont run --every 1d --from now -n node001 /path/to/script.sh`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		err := runJob(cmd, args)
 
