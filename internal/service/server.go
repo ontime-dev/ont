@@ -31,7 +31,7 @@ func Server(db *sql.DB, ip, port string) {
 	}
 
 	defer listener.Close()
-	escape.LogPrint("Ontd server running on port 3033")
+	escape.LogPrintf("Ontd server running on port %s", port)
 
 	for {
 

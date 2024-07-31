@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"ont/internal/client"
 	"ont/internal/dbopts"
+	"ont/internal/remote"
 	"ont/internal/run"
 	"os"
 	"os/user"
@@ -126,15 +127,25 @@ func runJob(cmd *cobra.Command, script []string) error {
 		}
 	}
 
-	//Check if script exists.
-	_, err = os.Stat(script_path)
+	user, err := user.Current()
 	if err != nil {
 		return err
 	}
 
-	user, err := user.Current()
-	if err != nil {
-		return err
+	// check if the script exists on the remote server
+	if nodes != os.Getenv("HOSTNAME") {
+		cmd := fmt.Sprintf("stat %s 2> /dev/null", script_path)
+		err := remote.Run(user.Username, nodes, cmd, "", "", true)
+		if err != nil {
+			return fmt.Errorf("stat %s: no such file or directory on the remote server", script_path)
+		}
+
+	} else {
+		//Check if script exists.
+		_, err = os.Stat(script_path)
+		if err != nil {
+			return err
+		}
 	}
 
 	job := dbopts.Jobs{

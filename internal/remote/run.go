@@ -11,9 +11,11 @@ import (
 	"golang.org/x/crypto/ssh/knownhosts"
 )
 
-func Run(user, server, cmd, prvtKeyFile, pubKeyFile string) error {
-	cmd = fmt.Sprintf("bash %s", cmd)
+func Run(user, server, cmd, prvtKeyFile, pubKeyFile string, stat bool) error {
 
+	if !stat {
+		cmd = fmt.Sprintf("bash %s", cmd)
+	}
 	userSSHDir := fmt.Sprintf("/home/%s/.ssh", user)
 
 	prvtKey, err := getPrivateKey(userSSHDir, prvtKeyFile)

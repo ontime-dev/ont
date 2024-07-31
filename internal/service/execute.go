@@ -31,7 +31,7 @@ func Execute(db *sql.DB, table string, job dbopts.Jobs) {
 				escape.LogPrint(err.Error())
 			}
 		} else {
-			err := remote.Run(table, job.RunOn, job.Script, "", "")
+			err := remote.Run(table, job.RunOn, job.Script, "", "", false)
 			if err != nil {
 				escape.LogPrint(err.Error())
 			}
