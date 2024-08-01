@@ -6,11 +6,22 @@ import (
 	"ont/internal/config"
 	"ont/internal/dbopts"
 	"ont/internal/escape"
+	"strings"
 	"sync"
 	"time"
 )
 
 func Letsgo() error {
+	var verbose bool
+
+	if strings.ToLower(config.GetConfig("DEBUG")) == "true" {
+		verbose = true
+	} else if strings.ToLower(config.GetConfig("DEBUG")) == "false" {
+		verbose = false
+	} else {
+		escape.LogFatal("Invalid value of DEBUG (True/False)")
+	}
+
 	password, ip, port := config.GetConfig("DBPASS"), config.GetConfig("SERVER_IP"), config.GetConfig("SERVER_PORT")
 	pass_cmd := fmt.Sprintf("ont:%s@/ontime", password)
 
@@ -19,7 +30,7 @@ func Letsgo() error {
 		escape.LogFatal(err)
 	}
 
-	go Server(db, ip, port)
+	go Server(db, ip, port, verbose)
 	defer db.Close()
 
 	for {
@@ -40,18 +51,18 @@ func Letsgo() error {
 		for _, table := range allTables {
 			wg.Add(1)
 
-			go ProcessTable(db, table, &wg)
+			go ProcessTable(db, table, &wg, verbose)
 		}
 		wg.Wait()
 	}
 }
 
-func ProcessTable(db *sql.DB, table string, wg *sync.WaitGroup) {
+func ProcessTable(db *sql.DB, table string, wg *sync.WaitGroup, verbose bool) {
 
 	defer wg.Done()
 	var job dbopts.Jobs
 
-	maxID, err := dbopts.GetMaxID(db, table)
+	maxID, err := dbopts.GetMaxID(db, table, verbose)
 	if err != nil {
 		if err.Error() == fmt.Sprintf("Table 'ontime.%s' doesn't exist", table) {
 			return
@@ -62,7 +73,7 @@ func ProcessTable(db *sql.DB, table string, wg *sync.WaitGroup) {
 	}
 
 	for id := 1; id <= maxID; id++ {
-		job, err := job.GetJob(db, table, id)
+		job, err := job.GetJob(db, table, id, verbose)
 		if err != nil {
 			if err.Error() != "sql: no rows in result set" {
 				escape.LogPrint(err)
@@ -70,7 +81,7 @@ func ProcessTable(db *sql.DB, table string, wg *sync.WaitGroup) {
 
 		}
 		if job.Exec_time == time.Now().Format("15:04:05 Jan 02 2006") {
-			Execute(db, table, job)
+			Execute(db, table, job, verbose)
 		}
 
 	}

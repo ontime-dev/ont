@@ -9,7 +9,7 @@ This project is in the beta phase, and using it in production environments is no
 - You can easily stop the job and start it again anytime later.
 - You can check the status of the last execution of a job (in progress).
 - You can run a job on a remote server and manage all the jobs from one single node.
-
+- Easy to manage and debug.
 
 ## Get started:
 ### For administrators:

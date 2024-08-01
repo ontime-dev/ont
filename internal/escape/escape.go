@@ -47,3 +47,9 @@ func LogFatal(value ...any) {
 	LogPrint(value...)
 	os.Exit(1)
 }
+
+func Debug(verbose bool, funcname, format string, value ...any) {
+	if verbose {
+		LogPrintf("%sDEBUG: %s", funcname, format)
+	}
+}

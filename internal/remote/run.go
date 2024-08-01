@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"ont/internal/escape"
 	"os"
 	"strings"
 
@@ -11,13 +12,16 @@ import (
 	"golang.org/x/crypto/ssh/knownhosts"
 )
 
-func Run(user, server, cmd, prvtKeyFile, pubKeyFile string, stat bool) error {
+func Run(user, server, cmd, prvtKeyFile, pubKeyFile string, stat, verbose bool) error {
 
 	if !stat {
 		cmd = fmt.Sprintf("bash %s", cmd)
 	}
 	userSSHDir := fmt.Sprintf("/home/%s/.ssh", user)
 
+	if verbose {
+		escape.LogPrintf("DEBUG(RMTRN): Getting ssh private key for user %s", user)
+	}
 	prvtKey, err := getPrivateKey(userSSHDir, prvtKeyFile)
 	if err != nil {
 		return err
@@ -36,17 +40,22 @@ func Run(user, server, cmd, prvtKeyFile, pubKeyFile string, stat bool) error {
 		},
 	}
 
-	serverIP, serverHost, err := getServerIPHOST(server)
+	if verbose {
+		escape.LogPrintf("DEBUG(RMTRN): Getting IP and hostname of the server %s", server)
+	}
+	serverIP, serverHost, err := getServerIPHOST(server, verbose)
 	if err != nil {
 		return err
 	}
 
-	//verbose
-	//escape.LogPrint("Trying with server IP")
+	if verbose {
+		escape.LogPrintf("DEBUG(RMTRN): Trying with server IP '%s'", serverIP[0])
+	}
 	client, err := ssh.Dial("tcp", net.JoinHostPort(serverIP[0].String(), "22"), config)
 	if err != nil {
-		//verbose
-		// escape.LogPrint("Trying with server hostname")
+		if verbose {
+			escape.LogPrintf("DEBUG(RMTRN): Trying with server hostname '%s'", serverHost[0])
+		}
 		client, err = ssh.Dial("tcp", net.JoinHostPort(serverHost[0], "22"), config)
 		if err != nil {
 			if strings.Contains(err.Error(), "knownhosts: key is unknown") {
@@ -58,8 +67,9 @@ func Run(user, server, cmd, prvtKeyFile, pubKeyFile string, stat bool) error {
 			}
 		}
 	}
-	//verbose
-	// escape.LogPrint("Connection Succeeded. Proceeding.")
+	if verbose {
+		escape.LogPrint("DEBUG(RMTRN): Connetion Succeeded. Proceeding")
+	}
 
 	session, err := client.NewSession()
 
@@ -69,13 +79,16 @@ func Run(user, server, cmd, prvtKeyFile, pubKeyFile string, stat bool) error {
 
 	err = session.Run(cmd)
 
+	if verbose {
+		escape.LogPrint("DEBUG(RMTRN): Closing open ssh sessions")
+	}
 	session.Close()
 	client.Close()
 
 	return err
 }
 
-func getServerIPHOST(server string) ([]net.IP, []string, error) {
+func getServerIPHOST(server string, verbose bool) ([]net.IP, []string, error) {
 
 	var serverHost []string
 	var serverIP []net.IP
@@ -84,16 +97,18 @@ func getServerIPHOST(server string) ([]net.IP, []string, error) {
 	ip := net.ParseIP(server)
 	//If ip == nil, it is a hostname, if not nil, it is an ip.
 	if ip != nil {
-		//verbose
-		//escape.LogPrint(Reverse resolving the IP)
+		if verbose {
+			escape.LogPrintf("DEBUG(GTSRVRIPHST): Reverse lookup the IP %s", server)
+		}
 		serverHost, err = net.LookupAddr(server)
 		serverIP = []net.IP{ip}
 		if err != nil {
 			return nil, nil, err
 		}
 	} else {
-		//verbose
-		//escape.LogPrint(Resolving the server")
+		if verbose {
+			escape.LogPrintf("DEBUG(GTSRVRIPHST): Resolving the server hostname %s", server)
+		}
 		serverIP, err = net.LookupIP(server)
 		serverHost = []string{server}
 		if err != nil {
