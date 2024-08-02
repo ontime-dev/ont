@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"ont/internal/escape"
-	"ont/service"
+	"github.com/ontime-dev/ont/internal/escape"
+	"github.com/ontime-dev/ont/service"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

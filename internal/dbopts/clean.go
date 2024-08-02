@@ -3,7 +3,8 @@ package dbopts
 import (
 	"database/sql"
 	"fmt"
-	"ont/internal/escape"
+
+	"github.com/ontime-dev/ont/internal/escape"
 )
 
 // import (

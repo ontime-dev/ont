@@ -3,11 +3,12 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"ont/client"
-	"ont/internal/dbopts"
-	esc "ont/internal/escape"
 	"os/user"
 	"strconv"
+
+	"github.com/ontime-dev/ont/client"
+	"github.com/ontime-dev/ont/internal/dbopts"
+	"github.com/ontime-dev/ont/internal/escape"
 
 	"github.com/spf13/cobra"
 )
@@ -21,11 +22,11 @@ var removeCmd = &cobra.Command{
 		if len(args) == 1 {
 			jobID, err := strconv.Atoi(args[0])
 			if err != nil {
-				esc.Error(err.Error())
+				escape.Error(err.Error())
 			}
 			err = removeJob(jobID)
 			if err != nil {
-				esc.Error(err.Error())
+				escape.Error(err.Error())
 			}
 		} else if len(args) == 0 {
 			return errors.New("please specify one job to remove")

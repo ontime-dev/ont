@@ -1,4 +1,4 @@
-module ont
+module github.com/ontime-dev/ont
 
 go 1.22.0
 

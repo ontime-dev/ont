@@ -2,7 +2,8 @@ package dbopts
 
 import (
 	"database/sql"
-	"ont/internal/escape"
+
+	"github.com/ontime-dev/ont/internal/escape"
 )
 
 func List(db *sql.DB, user string, verbose bool) ([]Jobs, error) {

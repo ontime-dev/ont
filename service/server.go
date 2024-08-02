@@ -6,9 +6,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
-	"ont/internal/dbopts"
-	"ont/internal/escape"
 	"strings"
+
+	"github.com/ontime-dev/ont/internal/dbopts"
+	"github.com/ontime-dev/ont/internal/escape"
 
 	_ "github.com/go-sql-driver/mysql"
 	"golang.org/x/exp/rand"
@@ -157,7 +158,6 @@ func Server(db *sql.DB, ip, port string, verbose bool) {
 			} else {
 				err = msg.Job.ChangeJobStatus(db, msg.User, "Active", true, verbose)
 				if err != nil {
-					fmt.Println(err.Error())
 					if err.Error() == "sql: no rows in result set" {
 						status := fmt.Sprintf("Job %d doesn't exist", msg.Job.Id)
 						response = Message{

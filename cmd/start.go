@@ -3,11 +3,12 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"ont/client"
-	"ont/internal/dbopts"
-	"ont/internal/run"
 	"os/user"
 	"strconv"
+
+	"github.com/ontime-dev/ont/client"
+	"github.com/ontime-dev/ont/internal/dbopts"
+	"github.com/ontime-dev/ont/internal/run"
 
 	"github.com/spf13/cobra"
 )

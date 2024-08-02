@@ -4,9 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"net"
-	"ont/internal/escape"
 	"os"
 	"strings"
+
+	"github.com/ontime-dev/ont/internal/escape"
 
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/knownhosts"

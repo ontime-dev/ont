@@ -3,12 +3,13 @@ package service
 import (
 	"database/sql"
 	"fmt"
-	"ont/internal/config"
-	"ont/internal/dbopts"
-	"ont/internal/escape"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/ontime-dev/ont/internal/config"
+	"github.com/ontime-dev/ont/internal/dbopts"
+	"github.com/ontime-dev/ont/internal/escape"
 )
 
 func Letsgo() error {

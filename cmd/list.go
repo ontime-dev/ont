@@ -4,10 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"ont/client"
-	esc "ont/internal/escape"
 	"os/user"
 	"strconv"
+
+	"github.com/ontime-dev/ont/client"
+	"github.com/ontime-dev/ont/internal/escape"
 
 	"github.com/spf13/cobra"
 )
@@ -21,16 +22,16 @@ var listCmd = &cobra.Command{
 		if len(args) == 1 {
 			jobID, err := strconv.Atoi(args[0])
 			if err != nil {
-				esc.Error(err.Error())
+				escape.Error(err.Error())
 			}
 			err = listJobs(jobID)
 			if err != nil {
-				esc.Error(err.Error())
+				escape.Error(err.Error())
 			}
 		} else if len(args) == 0 {
 			err := listJobs(0)
 			if err != nil {
-				esc.Error(err.Error())
+				escape.Error(err.Error())
 			}
 		} else {
 			return errors.New("you cannot specify more than one job")

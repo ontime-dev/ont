@@ -3,8 +3,9 @@ package cmd
 import (
 	"fmt"
 	"log"
-	"ont/client"
 	"os/user"
+
+	"github.com/ontime-dev/ont/client"
 
 	"github.com/spf13/cobra"
 )

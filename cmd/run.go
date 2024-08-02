@@ -4,13 +4,14 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"ont/client"
-	"ont/internal/dbopts"
-	"ont/internal/remote"
-	"ont/internal/run"
 	"os"
 	"os/user"
 	"path/filepath"
+
+	"github.com/ontime-dev/ont/client"
+	"github.com/ontime-dev/ont/internal/dbopts"
+	"github.com/ontime-dev/ont/internal/remote"
+	"github.com/ontime-dev/ont/internal/run"
 
 	"github.com/spf13/cobra"
 )

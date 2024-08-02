@@ -2,16 +2,17 @@ package service
 
 import (
 	"database/sql"
-	"ont/internal/dbopts"
-	"ont/internal/escape"
-	"ont/internal/remote"
-	"ont/internal/run"
 	"os"
 	"os/exec"
 	"os/user"
 	"strconv"
 	"syscall"
 	"time"
+
+	"github.com/ontime-dev/ont/internal/dbopts"
+	"github.com/ontime-dev/ont/internal/escape"
+	"github.com/ontime-dev/ont/internal/remote"
+	"github.com/ontime-dev/ont/internal/run"
 )
 
 func Execute(db *sql.DB, table string, job dbopts.Jobs, verbose bool) {

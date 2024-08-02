@@ -5,9 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
-	"ont/internal/config"
-	"ont/internal/dbopts"
-	"ont/internal/escape"
+
+	"github.com/ontime-dev/ont/internal/config"
+	"github.com/ontime-dev/ont/internal/dbopts"
+	"github.com/ontime-dev/ont/internal/escape"
 )
 
 type Message struct {

@@ -4,8 +4,9 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"ont/internal/escape"
 	"strings"
+
+	"github.com/ontime-dev/ont/internal/escape"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -80,9 +81,7 @@ func (job Jobs) RemoveJob(db *sql.DB, table string, verbose bool) error {
 func (job Jobs) GetJob(db *sql.DB, table string, id int, verbose bool) (Jobs, error) {
 	job.Id = id
 	cmd := fmt.Sprintf("SELECT script,exec_time,every,status,runon FROM %s WHERE id = %d ORDER BY timestamp DESC LIMIT 1;", table, job.Id)
-	// if verbose {
-	// 	escape.LogPrintf("(RMVJB)DEBUG: Retrieving Job information for user %s", table)
-	// }
+
 	err := db.QueryRow(cmd).Scan(&job.Script, &job.Exec_time, &job.Every, &job.Status, &job.RunOn)
 	if err != nil {
 		return job, err
