@@ -42,9 +42,7 @@ get_ont_password() {
 create_db() {
 	NEWPW=$1
 	echo "Insert Mysql root password below"
-	/bin/mysql -u root -p -e "DROP DATABASE ontime; \n
-	DROP USER ont@localhost; \n
-	CREATE DATABASE ontime; \n
+	/bin/mysql -u root -p -e "CREATE DATABASE ontime; \n
 	CREATE USER 'ont'@'localhost' IDENTIFIED BY '${NEWPW}'; \n
 	GRANT ALL PRIVILEGES ON ontime.* TO 'ont'@'localhost';
 	FLUSH PRIVILEGES;" 1>/dev/null
