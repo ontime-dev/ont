@@ -1,5 +1,8 @@
 Ontime
 ---
+
+<img src="./ontimeloglo.png" alt="ontime Logo" width=300></img>
+
 Ont (short for ontime) is a cronjob-like command line tool featuring simpler commands and more robust job management. With ont, you can store jobs in a database, stop them, and restart them at any time.
 
 This project is in the beta phase, and using it in production environments is not recommended at the moment. However, we would appreciate it if you could test it and provide feedback.
