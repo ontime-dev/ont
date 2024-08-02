@@ -7,7 +7,7 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"ont/internal/client"
+	"ont/client"
 	"ont/internal/dbopts"
 	"ont/internal/remote"
 	"ont/internal/run"

@@ -6,7 +6,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"ont/internal/client"
+	"ont/client"
 	"ont/internal/dbopts"
 	esc "ont/internal/escape"
 	"os/user"

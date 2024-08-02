@@ -31,7 +31,7 @@ The ont daemon can also be started using systemd:
 ```
 $ systemctl status ontd.service
 ```
-If the file ontd.service doesn't exist, please create it and start the service. You can find a sample in examples/ontd.service.
+If the file ontd.service doesn't exist, please create it and start the service. You can find a sample in ontd.service file.
 
 5. To test the installation you can check the version and the help function.
 ```

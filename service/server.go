@@ -49,9 +49,6 @@ func Server(db *sql.DB, ip, port string, verbose bool) {
 			escape.LogPrint(err.Error())
 		}
 
-		//Verbose logging
-		//escape.LogPrintf("User '%s' requested '%s' job \n", msg.User, msg.Command)
-
 		if verbose {
 			escape.LogPrintf("DEBUG(SRVR): User '%s' requested '%s' job \n", msg.User, msg.Command)
 		}
@@ -70,9 +67,6 @@ func Server(db *sql.DB, ip, port string, verbose bool) {
 				User:    msg.User,
 				Jobs:    jobs,
 			}
-
-			//Verbose logging
-			//escape.LogPrint(jobs)
 
 			sendResponse(response, conn)
 

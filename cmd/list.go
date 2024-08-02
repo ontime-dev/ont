@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"ont/internal/client"
+	"ont/client"
 	esc "ont/internal/escape"
 	"os/user"
 	"strconv"

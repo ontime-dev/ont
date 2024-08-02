@@ -6,7 +6,7 @@ package cmd
 import (
 	"fmt"
 	"log"
-	"ont/internal/client"
+	"ont/client"
 	"os/user"
 
 	"github.com/spf13/cobra"

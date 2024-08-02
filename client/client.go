@@ -46,7 +46,7 @@ func SendMsg(message Message) (Message, error) {
 
 	response, err := bufio.NewReader(conn).ReadString('\n')
 	if err != nil {
-		escape.Error("Error reading from connection:", err)
+		escape.Error("Error reading from connection: %s", err.Error())
 	}
 
 	var responsemsg Message

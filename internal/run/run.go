@@ -7,10 +7,6 @@ import (
 	"time"
 )
 
-// func ParseTimeDate() {
-
-// }
-
 func ParseEvryFrom(every, from string) (string, error) {
 
 	number, last_char := GetLastChar(every)
