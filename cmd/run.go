@@ -132,7 +132,11 @@ func runJob(cmd *cobra.Command, script []string) error {
 	}
 
 	// check if the script exists on the remote server
-	if nodes != os.Getenv("HOSTNAME") {
+	hostname, err := os.Hostname()
+	if err != nil {
+		return err
+	}
+	if nodes != hostname {
 		cmd := fmt.Sprintf("stat %s 2> /dev/null", script_path)
 		err := remote.Run(user.Username, nodes, cmd, "", "", true, false)
 		if err != nil {

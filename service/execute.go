@@ -27,8 +27,12 @@ func Execute(db *sql.DB, table string, job dbopts.Jobs, verbose bool) {
 	cmd.SysProcAttr = &syscall.SysProcAttr{}
 	cmd.SysProcAttr.Credential = &syscall.Credential{Uid: uid}
 	cmd.Dir = homeDir
+	hostname, err := os.Hostname()
+	if err != nil {
+		escape.LogPrint(err.Error())
+	}
 	go func() {
-		if job.RunOn == os.Getenv("HOSTNAME") {
+		if job.RunOn == hostname {
 			if verbose {
 				escape.LogPrint("DEBUG(EXCT): Executing the job Locally")
 			}
@@ -46,7 +50,7 @@ func Execute(db *sql.DB, table string, job dbopts.Jobs, verbose bool) {
 			}
 		}
 	}()
-	err := ChangeExecTime(db, table, job, verbose)
+	err = ChangeExecTime(db, table, job, verbose)
 	if err != nil {
 		escape.LogPrint(err.Error())
 	}
