@@ -35,7 +35,8 @@ func Execute() {
 
 func init() {
 	//cobra.OnInitialize(initConfig)
-	rootCmd.SetVersionTemplate("V.1.07 \n")
+	//rootCmd.SetVersionTemplate("V.1.0.0-alpha \n")
+	rootCmd.Version = "v1.0.0-alpha"
 	rootCmd.CompletionOptions.HiddenDefaultCmd = true
 	//rootCmd.SetUsageFunc(Usage)
 	//rootCmd.SetUsageTemplate(customUsage)
