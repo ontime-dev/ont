@@ -75,6 +75,36 @@ Using ```ont``` as a user is pretty simple, you just need to run one of the subc
 
 ---
    ## Installation
+   
+   1. Install the binary as follows:
+   ```
+   $ go install -v github.com/ontime-dev/ont@latest
+   ```
+
+   2. Download the initOnt.sh script:
+   ```
+   $ wget https://raw.githubusercontent.com/ontime-dev/ont/main/scripts/initOnt.sh  
+   ```
+   
+   3. Set the script as executable:
+   ```
+   $ chmod +x initOnt.sh
+   ```
+   
+   4. Execute it to setup ont:
+   ```
+   $ ./initOnt.sh
+   ```
+
+That's it, ont is installed now. You can modify the configuration parameters in ont.conf as required, and then start the daemon:
+```
+$ <path/to/ont> daemon
+```
+   
+You can also create a ontd.service file and enable it using systemctl:
+```
+$ systemctl enable --now ontd.service
+```
 
 
 
