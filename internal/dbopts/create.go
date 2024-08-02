@@ -10,13 +10,13 @@ import (
 )
 
 const table = `(
-	timestamp timestamp(3),
-	id int,
-	script varchar(255),
-	exec_time varchar(255),
-	every varchar(255),
-	status varchar(255),
-	runon varchar(255)
+	timestamp TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3),
+	id INT,
+	script VARCHAR(255),
+	exec_time VARCHAR(255),
+	every VARCHAR(255),
+	status VARCHAR(255),
+	runon VARCHAR(255)
 )`
 
 func Create(db *sql.DB, user string, verbose bool) error {
