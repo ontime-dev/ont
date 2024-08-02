@@ -6,20 +6,21 @@ This project is in the beta phase, and using it in production environments is no
 
 ## How is it different from cronjob and systemd timers?
 - Easier syntax. You just need to pass the correct value to the option, pass the script path, and press enter.
+- It is a matter of just one command line which can be executed from anywhere on the cluster to submit a job. 
 - You can easily stop the job and start it again anytime later.
 - You can check the status of the last execution of a job (in progress).
-- You can run a job on a remote server and manage all the jobs from one single node.
+- You can run a job on a remote server and manage all the jobs from one single node and from any node connected to ontd in the cluster.
 - Easy to manage and debug.
 
 ## Get started:
 ### For administrators:
 > Note: The admin need to be either root user or sudo user.
-1. Install ont on a server.(check the installation guide)
-2. Run the script ontInit.sh to create the DB, choose the DB password, and initialze ontd.
+1. Install ont on a server (check the installation guide).
+2. Run the script initOnt.sh to create the DB, choose the DB password, and initialze ontd.
 ```
 $ wget <script path>
 $ chmod +x init_ont.sh
-$ ./init_ont.sh
+$ ./initOnt.sh
 ```
 3. Modify the default values in the file ```/etc/ont/ont.conf``` as per the environment requirements.
 4. Start the ont daemon as follows:
@@ -30,7 +31,8 @@ The ont daemon can also be started using systemd:
 ```
 $ systemctl status ontd.service
 ```
-If the file ontd.service doesn't exist, please create it and start the service. You can find a sample in examples/ontd.service
+If the file ontd.service doesn't exist, please create it and start the service. You can find a sample in examples/ontd.service.
+
 5. To test the installation you can check the version and the help function.
 ```
 $ ont -v
@@ -42,7 +44,7 @@ $ ont -h
 Using ```ont``` as a user is pretty simple, you just need to run one of the subcommands and pass the arguments.
 - To submit a job:
   ```
-  $ ont run -e 1d -f now /path/to/script.sh
+  $ ont run --every 1d --from now /path/to/script.sh
   ```
   This will execute the script ```script.sh``` every day (1d) starting from now (now). Using ```now``` will execute the job immediately once, and then the next execution will be the following day at the same time. You can also pass a specific time or date. More examples can be found in the help output of the command.
   ```
@@ -59,7 +61,7 @@ Using ```ont``` as a user is pretty simple, you just need to run one of the subc
   $ ont start <jobID>
   ```
 
-  You can also run a job on a remote server by passing the name or the IP address of the remote server to the run subcommand.
+  You can also run a job on a remote server by passing the name or the IP address of the remote server to the ```run``` subcommand.
    ```
    $ ont run -e 1d -f now -n node001 /path/to/script.sh
    ```
